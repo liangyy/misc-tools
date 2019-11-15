@@ -30,34 +30,46 @@ parser.add_argument('--lookup_newid_col', type = int, help='''
 parser.add_argument('--out_txtgz', help='''
     output txt.gz file name
 ''')
+parser.add_argument('--if_input_has_header', default = 1, type = int, help='''
+    set to non-1 if does not have header
+''')
 args = parser.parse_args()
 
-import gzip, re
+import gzip, re, os
 
 
 # first go through lookup table and get save position info for each snp 
 # then scan the target file
 
+def my_read(filename):
+    filep, filee = os.path.splitext(filename)
+    if filee == '.gz':
+        return gzip.open(filename, 'rt')
+    else:
+       return open(filename, 'r')
+
 var_dic = {}
 
-with gzip.open(args.lookup_table, 'rt') as f:
+with my_read(args.lookup_table) as f:
     for i in f:
         i = i.strip().split('\t')
-        snpid = i[args.lookup_chr_col - 1]
-        chr = re.sub('chr', '', chr)
+        chrm = i[args.lookup_chr_col - 1]
+        chrm = re.sub('chr', '', chrm)
         start = i[args.lookup_start_col - 1]
         end = i[args.lookup_end_col - 1]
+        newid = i[args.lookup_newid_col - 1]
         if start != end:
             continue
-        v = chr + ':' + start
+        v = chrm + ':' + start
         if v not in var_dic:
-            var_dic[v] = 1
+            var_dic[v] = newid
 
 o = gzip.open(args.out_txtgz, 'wt')
 
 
-with gzip.open(args.input, 'rt') as f:
-    o.write(next(f).strip() + '\t' + 'new_id' + '\n')
+with my_read(args.input) as f:
+    if args.if_input_has_header == 1:
+        o.write(next(f).strip() + '\t' + 'new_id' + '\n')
     for i in f:
         i = i.strip().split('\t')
         snpid = i[args.snpid_col - 1]
