@@ -1,5 +1,5 @@
 import numpy as np
-import sys, os
+import sys, os, gzip
 
 global coding_dic
 # ref/alt coding rule:
@@ -44,7 +44,7 @@ def read_in_file_name_allowing_by_chromosome(filename):
             print('Wrong filename:', filename, ', it contains more than one @!')
             sys.exit()
         for i in range(1, 23):
-            out.append(file_split[0] + str(i), file_split[1])
+            out.append(file_split[0] + str(i) + file_split[1])
     else:
         out.append(filename)
     return out
