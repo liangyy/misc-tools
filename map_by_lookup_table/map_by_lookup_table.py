@@ -85,8 +85,7 @@ for lookup_file in read_in_file_name_allowing_by_chromosome(args.lookup_table):
                 print('Wrong lookup: same snp has already been included: ', '\t'.join(i))
                 continue
             var_dic[v] = ( i[args.lookup_snpid_col - 1], ref, alt )
-
-print('Finished scanning lookup table(s)', flush = True)
+    print('Finished scanning lookup table: ', lookup_file, flush = True)
 
 meta_dic = {
     'other invalid (long ref or alt)': 0,
