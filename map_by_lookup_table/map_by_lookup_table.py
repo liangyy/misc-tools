@@ -124,19 +124,21 @@ with my_read(args.input) as f:
             if info[1] == ref:
                 meta_dic['exact match'] += 1
             else:
-                meta_dic['flipped ref/alt'] += 1
+                meta_dic['flipped strand'] += 1
+                i[args.ref_col - 1] = info[1]
+                i[args.alt_col - 1] = info[2]
             i.append(newid)
             o.write('\t'.join(i) + '\n')
         elif v_ambiguious in var_dic:
             info = var_dic[v_ambiguious]
             newid = info[0]
             if info[2] == ref:
-                meta_dic['flipped strand'] += 1
+                meta_dic['flipped ref/alt'] += 1
             else:
                 meta_dic['flipped strand and ref/alt'] += 1
             i.append(newid)
-            i[args.ref_col - 1] = alt
-            i[args.alt_col - 1] = ref
+            i[args.ref_col - 1] = info[1]
+            i[args.alt_col - 1] = info[2]
             for ff in flip_cols:
                 i[ff - 1] = str(-1 * float(i[ff - 1]))
             o.write('\t'.join(i) + '\n')
