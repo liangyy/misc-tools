@@ -86,6 +86,8 @@ for lookup_file in read_in_file_name_allowing_by_chromosome(args.lookup_table):
                 continue
             var_dic[v] = ( i[args.lookup_snpid_col - 1], ref, alt )
 
+print('Finished scanning lookup table(s)', flush = True)
+
 meta_dic = {
     'other invalid (long ref or alt)': 0,
     'not shown': 0,
