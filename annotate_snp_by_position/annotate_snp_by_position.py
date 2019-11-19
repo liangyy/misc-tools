@@ -9,8 +9,14 @@ parser = argparse.ArgumentParser(prog='annotate_snp_by_position.py', description
 parser.add_argument('--input', help='''
     input variant list 
 ''')
-parser.add_argument('--snpid_col', type = int, help='''
-    column index of snpid in --input
+parser.add_argument('--snpid_col', type = int, default = 0, help='''
+    column index of snpid (CHR:POS) in --input
+''')
+parser.add_argument('--chr_col', type = int, default = 0, help='''
+    column index of CHR in --input
+''')
+parser.add_argument('--pos_col', type = int, default = 0, help='''
+    column index of POS in --input
 ''')
 parser.add_argument('--lookup_table', help='''
     GTEx V8 variant lookup table 
@@ -72,7 +78,13 @@ with my_read(args.input) as f:
         o.write(next(f).strip() + '\t' + 'new_id' + '\n')
     for i in f:
         i = i.strip().split('\t')
-        snpid = i[args.snpid_col - 1]
+        if args.snpid != 0:
+            snpid = i[args.snpid_col - 1]
+        elif args.chr_col != 0 and args.pos_col != 0:
+            snpid = re.sub('chr', '', i[args.chr_col - 1]) + ':' + i[args.pos_col - 1]
+        else:
+            print("Both --snpid_col and --chr_col/--pos_col are empty! At least one of them should be specified")
+            os.exit()
         if snpid in var_dic:
             i.append(var_dic[snpid])
             o.write('\t'.join(i) + '\n')
