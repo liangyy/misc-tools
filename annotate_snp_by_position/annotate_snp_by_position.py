@@ -78,7 +78,7 @@ with my_read(args.input) as f:
         o.write(next(f).strip() + '\t' + 'new_id' + '\n')
     for i in f:
         i = i.strip().split('\t')
-        if args.snpid != 0:
+        if args.snpid_col != 0:
             snpid = i[args.snpid_col - 1]
         elif args.chr_col != 0 and args.pos_col != 0:
             snpid = re.sub('chr', '', i[args.chr_col - 1]) + ':' + i[args.pos_col - 1]
