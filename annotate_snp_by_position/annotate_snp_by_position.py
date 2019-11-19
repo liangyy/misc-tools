@@ -72,6 +72,7 @@ with my_read(args.lookup_table) as f:
 
 o = gzip.open(args.out_txtgz, 'wt')
 
+print('Finished read in lookup table', flush = True)
 
 with my_read(args.input) as f:
     if args.if_input_has_header == 1:
