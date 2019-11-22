@@ -11,7 +11,7 @@ read_cols = function(cols) {
 }
 
 myread = function(filename) {
-  message(tools::file_ext(filename))
+  # message(tools::file_ext(filename))
   if(tools::file_ext(filename) == 'gz') {
     cmd = paste0('zcat < ', filename)
   } else {
