@@ -16,16 +16,3 @@ $ jupyter notebook --no-browser --port=XXXX
 $ ssh -N -f -L localhost:YYYY:localhost:XXXX remoteuser@remotehost
 ```
 
-# An working example:
-
-On remote side
-
-```
-$ jupyter notebook --no-browser --port=8888
-```
-
-On local machine
-
-```
-$ ssh -N -f -L localhost:YYYY:localhost:XXXX yanyul@server
-```
