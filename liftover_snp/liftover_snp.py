@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 import pandas as pd
 from lib import liftover
-import re
+import re, os
 
 sep = '\t'
 if args.input_delim == 'space':
@@ -37,7 +37,11 @@ elif args.input_delim == 'tab':
 else:
     sep = args.input_delim
 
-df = pd.read_table(args.input, sep = sep)
+filename, file_extension = os.path.splitext(args.input)
+if file_extension != 'gz':
+    df = pd.read_table(args.input, sep = sep)
+else:
+    df = pd.read_table(args.input, sep = sep, compression = 'gzip')
 
 chr = df.iloc[:, args.chr_col - 1]
 pos = df.iloc[:, args.pos_col - 1] 
