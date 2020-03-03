@@ -51,6 +51,9 @@ parser.add_argument('--lookup_snpid_col', type = int, help='''
 parser.add_argument('--out_txtgz', help='''
     output txt.gz file name
 ''')
+parser.add_argument('--include_ambiguious', action = 'store_true', help='''
+    output txt.gz file name
+''')
 args = parser.parse_args()
 
 import gzip
@@ -115,7 +118,8 @@ with my_read(args.input) as f:
         ref_alt_code = ref_alt_to_code(ref, alt)
         if ref_alt_code is 1 or ref_alt_code is 4:
             meta_dic['Ambiguious SNP (T/A or G/C SNP)'] += 1
-            continue
+            if args.include_ambiguious is False:
+                continue
         v = '*'.join([chr, start, str(ref_alt_code)])
         v_ambiguious = '*'.join([chr, start, str(-1 * ref_alt_code)])
         if v in var_dic:
