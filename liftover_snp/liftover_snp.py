@@ -45,6 +45,8 @@ else:
 
 chr = df.iloc[:, args.chr_col - 1]
 pos = df.iloc[:, args.pos_col - 1] 
+# print(chr)
+chr = chr.apply(lambda x: re.sub('chr', '', str(x)))
 out = liftover(chr, pos, args.liftover_chain)
 df = pd.concat([df.reset_index(drop=True), out], axis=1)
 if args.if_with_chr != 1:
