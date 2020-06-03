@@ -1,0 +1,28 @@
+plink_exec: '/lambda_stor/data/yanyul/softwares/plink_softwares/plink2'
+gcta_exec: '/lambda_stor/data/yanyul/softwares/gcta_1.93.2beta/gcta64'
+vcf: '/lambda_stor/data/yanyul/Framingham/imputed_hrc1.1/chr{chr_num}.dose.vcf.gz'
+sample_list: '/lambda_stor/data/yanyul/Framingham/haplotype_po_framingham/preprocess/all_indiv_w_genotype.txt'
+grm_args: '--maf 0.05'
+chromosomes: 
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22

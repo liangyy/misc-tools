@@ -1,0 +1,57 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+if 'grm_args' not in config:
+    config['grm_args'] = ''
+if 'sample_list' is in config:
+    sample_cmd = '--keep ' + config['sample_list']
+else:
+    sample_cmd = ''
+
+chrom_list = config['chromosomes']
+
+rule grm_via_vcf:
+    input:
+        config['vcf']
+    output:
+        '{outdir}/{name_tag}/chr{chr_num}.grm',
+        '{outdir}/{name_tag}/chr{chr_num}.grm.id'
+    params:
+        prefix = '{outdir}/{name_tag}/chr{chr_num}',
+        more_args = config['grm_args']
+    shell:
+        '{config[plink_exec]} --vcf {input[0]} {sample_cmd} --make-grm-list {params.more_args} --out {params.prefix}'
+
+rule grm_gzip: 
+    input:
+        '{outdir}/{name_tag}/chr{chr_num}.grm'
+    output:
+        '{outdir}/{name_tag}/chr{chr_num}.grm.gz'
+    shell:
+        'cat {input[0]} | gzip > {output[0]}'
+
+rule mgrm_list:
+    input:
+        [ f'{{outdir}}/{{name_tag}}/chr{i}.grm.gz' for i in chrom_list ]
+    output:
+        '{outdir}/{name_tag}/mgrm_list.txt'
+    shell:
+        '''
+        for i in "{input}"
+        do
+          cat $i | sed "s/.grm.gz//g" >> {output[0]}
+        done
+        '''
+
+rule pca:
+    input:
+        grm = [ f'{{outdir}}/{{name_tag}}/chr{i}.grm.gz' for i in chrom_list ],
+        id = [ f'{{outdir}}/{{name_tag}}/chr{i}.grm.id' for i in chrom_list ],
+        list = '{outdir}/{name_tag}/mgrm_list.txt'
+    output:
+        '{outdir}/{name_tag}.eigenvec',
+        '{outdir}/{name_tag}.eigenval'
+    params:
+        '{outdir}/{name_tag}'
+    shell:
+        '{config[gcta_exec]} --mgrm-gz {input[input.list]}  --pca --out {params[0]}'
+
