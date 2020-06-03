@@ -1,0 +1,35 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+
+rule all:
+    input:
+        '{outdir}/{name_tag}/X.csv'.format(**config)
+
+rule prepare_input:
+    input:
+        config['data_matrix']
+    params:
+        config['if_transpose']
+    output:
+        '{outdir}/{name_tag}.mat.csv'
+    shell:
+        'Rscript prepare_input.R --input {input[0]} --if_transpose {params[0]} --output {output[0]}'
+
+rule run_peer:
+    input:
+        '{outdir}/{name_tag}.mat.csv'
+    output:
+        '{outdir}/{name_tag}/W.csv',
+        '{outdir}/{name_tag}/X.csv',
+        '{outdir}/{name_tag}/residuals.csv'
+    log:
+        '{outdir}/{name_tag}/PEER.log'
+    shell:
+        '''
+        echo "START" > {log} 
+        stdbuf -oL {config[path_to_peertool]} -f {input[0]} -n {config[nfactor]} -i 1000 -o {wildcards.outdir}/{wildcards.name_tag} --e_pb 10 --e_pa 0.1 --a_pb 0.01 --a_pa 0.001 |
+        while IFS= read -r line
+        do
+          echo "$line" >> {log}
+        done
+        '''
