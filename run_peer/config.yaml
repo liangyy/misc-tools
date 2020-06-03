@@ -1,5 +1,6 @@
 name_tag: test
-data_matrix: /lambda_stor/data/yanyul/Framingham/haplotype_po_framingham/preprocess/expression.all_indiv_w_genotype.tsv.gz
-if_transpose: No
+data_matrix: test.gz  # /lambda_stor/data/yanyul/Framingham/haplotype_po_framingham/preprocess/expression.all_indiv_w_genotype.tsv.gz
+if_transpose: 'No'
+skip_cols: 'probeset_id'
 path_to_peertool: /lambda_stor/data/yanyul/softwares/peer/bin/peertool
-nfactor: 40  # the number of PEER factors desired
+nfactor: 3  # 40  # the number of PEER factors desired

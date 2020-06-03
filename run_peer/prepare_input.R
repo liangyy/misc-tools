@@ -28,7 +28,7 @@ myread = function(fname) {
   } else {
     exec = 'cat'
   }
-  df = fread(cmd = paste(exec, '<', fname), header = T, sep = '\t')
+  df = fread(paste(exec, '<', fname), header = T, sep = '\t', data.table = F)
   return(df)
 }
 
@@ -36,7 +36,7 @@ skip_cols = function(df, col_str) {
   if(is.null(col_str)) {
     return(df)
   }
-  cols = strsplit(col_str, ',')
+  cols = strsplit(col_str, ',')[[1]]
   df = df[, ! colnames(df) %in% cols]
   return(df)
 }
@@ -46,10 +46,11 @@ take_care_of_transpose = function(df, if_transpose) {
     message('No transformation so assuming data matrix is N x G')
   } else if(if_transpose == 'Yes') {
     message('No transformation so assuming data matrix is G x N')
-    mat = t(mat)
+    df = t(df)
   } else {
     message('Not supported if_transpose = ', if_transpose)
   }
+  return(df)
 }
 
 mat = myread(opt$input)
@@ -59,4 +60,4 @@ message('Dimension of data matrix: ', 'N = ', dim(mat)[1], '; G = ', dim(mat)[2]
 
 ## Impute missing cells as suggested in paper
 mat_imp = impute::impute.knn(as.matrix(t(mat)))
-saveRDS(t(as.matrix(mat_imp$data)), opt$output, row = F, col = F, quo = F, sep = ',')
+write.table(t(as.matrix(mat_imp$data)), opt$output, row = F, col = F, quo = F, sep = ',')

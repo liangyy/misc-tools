@@ -9,11 +9,12 @@ rule prepare_input:
     input:
         config['data_matrix']
     params:
-        config['if_transpose']
+        config['if_transpose'],
+        config['skip_cols']
     output:
         '{outdir}/{name_tag}.mat.csv'
     shell:
-        'Rscript prepare_input.R --input {input[0]} --if_transpose {params[0]} --output {output[0]}'
+        'Rscript prepare_input.R --input {input[0]} --skip_cols {params[1]} --if_transpose {params[0]} --output {output[0]}'
 
 rule run_peer:
     input:
