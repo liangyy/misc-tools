@@ -118,4 +118,7 @@ if (!is.null(opt$sample_size_cols) & !is.null(opt$zscore_cols)) {
   quit()
 }
 
-write.table(cbind(df, result), opt$output, col = T, row = F, quo = F, sep = '\t')
+gz1 <- gzfile(opt$output, "w")
+write.table(cbind(df, result), gz1, col = T, row = F, quo = F, sep = '\t')
+close(gz1)
+
