@@ -2,12 +2,16 @@ if 'outdir' not in config:
     config['outdir'] = 'output'
 if 'grm_args' not in config:
     config['grm_args'] = ''
-if 'sample_list' is in config:
+if 'sample_list' in config:
     sample_cmd = '--keep ' + config['sample_list']
 else:
     sample_cmd = ''
 
 chrom_list = config['chromosomes']
+
+rule all:
+    input:
+        '{outdir}/{name_tag}.eigenvec'.format(**config)
 
 rule grm_via_vcf:
     input:
@@ -36,9 +40,10 @@ rule mgrm_list:
         '{outdir}/{name_tag}/mgrm_list.txt'
     shell:
         '''
-        for i in "{input}"
+        holder="{input}"
+        for i in $holder
         do
-          cat $i | sed "s/.grm.gz//g" >> {output[0]}
+          echo $i | sed "s/.grm.gz//g" >> {output[0]}
         done
         '''
 
@@ -53,5 +58,5 @@ rule pca:
     params:
         '{outdir}/{name_tag}'
     shell:
-        '{config[gcta_exec]} --mgrm-gz {input[input.list]}  --pca --out {params[0]}'
+        '{config[gcta_exec]} --mgrm-gz {input.list}  --pca --out {params[0]}'
 
