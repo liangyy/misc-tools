@@ -2,10 +2,17 @@ if 'outdir' not in config:
     config['outdir'] = 'output'
 if 'grm_args' not in config:
     config['grm_args'] = ''
-if 'sample_list' in config:
-    sample_cmd = '--keep ' + config['sample_list']
-else:
-    sample_cmd = ''
+def make_option(key, config, option):
+    if key in config:
+        o = option + ' ' + config[key]
+    else:
+        o = ''
+    return o
+
+sample_cmd = make_option('sample_list', config, '--keep')
+gcta_threads = make_option('gcta_threads', config, '--threads')
+plink_threads = make_option('plink_threads', config, '--threads')
+
 
 chrom_list = config['chromosomes']
 
@@ -23,7 +30,7 @@ rule grm_via_vcf:
         prefix = '{outdir}/{name_tag}/chr{chr_num}',
         more_args = config['grm_args']
     shell:
-        '{config[plink_exec]} --vcf {input[0]} {sample_cmd} --make-grm-list {params.more_args} --out {params.prefix}'
+        '{config[plink_exec]} --vcf {input[0]} {sample_cmd} {plink_threads} --make-grm-list {params.more_args} --out {params.prefix}'
 
 rule grm_gzip: 
     input:
@@ -58,5 +65,5 @@ rule pca:
     params:
         '{outdir}/{name_tag}'
     shell:
-        '{config[gcta_exec]} --mgrm-gz {input.list}  --pca --out {params[0]}'
+        '{config[gcta_exec]} --mgrm-gz {input.list} {gcta_threads} --pca --out {params[0]}'
 
