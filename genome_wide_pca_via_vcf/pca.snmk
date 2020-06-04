@@ -2,16 +2,18 @@ if 'outdir' not in config:
     config['outdir'] = 'output'
 if 'grm_args' not in config:
     config['grm_args'] = ''
-def make_option(key, config, option):
+def make_option(key, config, option, fill=None):
     if key in config:
         o = option + ' ' + config[key]
     else:
         o = ''
+        if fill is not None:
+            config[key] = fill
     return o
 
 sample_cmd = make_option('sample_list', config, '--keep')
-gcta_threads = make_option('gcta_threads', config, '--threads')
-plink_threads = make_option('plink_threads', config, '--threads')
+gcta_threads = make_option('gcta_threads', config, '--threads', fill=1)
+plink_threads = make_option('plink_threads', config, '--threads', fill=1)
 
 
 chrom_list = config['chromosomes']
@@ -29,6 +31,8 @@ rule grm_via_vcf:
     params:
         prefix = '{outdir}/{name_tag}/chr{chr_num}',
         more_args = config['grm_args']
+    threads:
+        config['plink_threads']
     shell:
         '{config[plink_exec]} --vcf {input[0]} {sample_cmd} {plink_threads} --make-grm-list {params.more_args} --out {params.prefix}'
 
@@ -62,6 +66,8 @@ rule pca:
     output:
         '{outdir}/{name_tag}.eigenvec',
         '{outdir}/{name_tag}.eigenval'
+    threads:
+        config['gcta_threads']
     params:
         '{outdir}/{name_tag}'
     shell:
