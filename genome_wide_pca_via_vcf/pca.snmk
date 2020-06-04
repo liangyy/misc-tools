@@ -4,7 +4,7 @@ if 'grm_args' not in config:
     config['grm_args'] = ''
 def make_option(key, config, option, fill=None):
     if key in config:
-        o = option + ' ' + config[key]
+        o = '{} {}'.format(option, config[key])
     else:
         o = ''
         if fill is not None:
@@ -14,7 +14,7 @@ def make_option(key, config, option, fill=None):
 sample_cmd = make_option('sample_list', config, '--keep')
 gcta_threads = make_option('gcta_threads', config, '--threads', fill=1)
 plink_threads = make_option('plink_threads', config, '--threads', fill=1)
-
+plink_memory = make_option('plink_memory_in_mb', config, '--memory')
 
 chrom_list = config['chromosomes']
 
@@ -34,7 +34,7 @@ rule grm_via_vcf:
     threads:
         config['plink_threads']
     shell:
-        '{config[plink_exec]} --vcf {input[0]} {sample_cmd} {plink_threads} --make-grm-list {params.more_args} --out {params.prefix}'
+        '{config[plink_exec]} --vcf {input[0]} {sample_cmd} {plink_threads} {plink_memory} --make-grm-list {params.more_args} --out {params.prefix}'
 
 rule grm_gzip: 
     input:
