@@ -1,4 +1,4 @@
-Quick guide to get my hands on `tabix`.
+Quick guide to get your hands on `tabix`.
 
 # Download
 
