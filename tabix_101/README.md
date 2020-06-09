@@ -10,8 +10,6 @@ At the step of `make install`, you may want to set customized directory for inst
 
 Now that we will rely on some example data in `../annotate_snp_by_position` to see how it works
 
-## Index a file
-
 **First of all**, `tabix` needs files to be compressed with `bgz` (a block-wise gzip shipped as part of `htslib` as well and it is widely adapted in genomics/genetics) which we can treat it just like GZ file but `tabix` will see the difference. 
 So, we have to convert the format first.
 
