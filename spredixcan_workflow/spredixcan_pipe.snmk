@@ -60,7 +60,7 @@ elif harmonization_type == 'simple':
             
 rule spredixcan:
     input:
-        gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'
+        gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz',
         db = config['predict_db'],
         cov = config['predict_db_cov']
     output:

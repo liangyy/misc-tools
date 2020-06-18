@@ -1,7 +1,7 @@
 gwas_tool_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/summary-gwas-imputation/src'
 metaxcan_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/MetaXcan/software'
 harmonization_type: 'full'  # or 'simple'
-gwas_file: '/scratch/t.cri.yliang/predixcan_simulation/test_gwas.txt.gz'
+gwas_file: 'test_gwas.txt.gz'
 predict_db: '/gpfs/data/im-lab/nas40t2/abarbeira/projects/gtex_v8/models_v1/eqtl/mashr/mashr_Whole_Blood.db'
 predict_db_cov: '/gpfs/data/im-lab/nas40t2/abarbeira/projects/gtex_v8/models_v1/eqtl/mashr/mashr_Whole_Blood.txt.gz'
 

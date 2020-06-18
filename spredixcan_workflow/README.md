@@ -1,8 +1,16 @@
 This tends to be an easy S-PrediXcan work pipe.
 Everything is derived from [this tutorial in MetaXcan wiki](https://github.com/hakyimlab/MetaXcan/wiki/Tutorial:-GTEx-v8-MASH-models-integration-with-a-Coronary-Artery-Disease-GWAS).
 
-The workflow allows both harmonization and dirty/quick harmonization.
+The workflow allows both harmonization and dirty/quick harmonization (the latter has been pushed to TODO).
 
+Unfortunately, I don't have a test run for this pipe since it depends on too many large files here and there. 
+I do include the input GWAS file to get a rough sense on what is typically expected .
+The command to works for CRI is:
+```
+export SNMK=/gpfs/data/im-lab/nas40t2/yanyul/softwares/miniconda2/envs/mixqtl/bin/snakemake
+conda activate metaxcan
+$SNMK -s spredixcan_pipe.snmk --configfile config.test.yaml -p
+```
 
 TODO: need to fix the following error.
 UPDATE: it is due to the fact that simple harmonization needs the input GWAS to have SNP ID (e.g. rsID) which is not the main interest for now.
