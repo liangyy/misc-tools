@@ -1,0 +1,55 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+
+if 'harmonization_type' not in config:
+    harmonization_type = 'simple'
+else:
+    harmonization_type = config['harmonization_type']
+
+def get_output_column_map_commands(in_dict):
+    out = []
+    for kk in in_dict.keys():
+        val = in_dict[kk]
+        out.append(f'--output_column_map {val} {kk}')
+    return out
+
+rule all_harmonization:
+    input:
+        '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'.format(**config)
+
+if harmonization_type == 'full':
+    col_cmd = get_output_column_map_commands(config['gwas_columns'])
+    rule harmonize:
+        input:
+            gwas = config['gwas_file']
+        output:
+            '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'
+        shell:
+            'python {config[gwas_tool_path]}/gwas_parsing.py \
+                -gwas_file {input.gwas} \
+                -output {output[0]} \
+                {config[extra_command]} \
+                {col_cmd}'
+elif harmonization_type == 'simple':
+    if 'variant_id' in config['gwas_columns']:
+        var_cmd = '--snp_column ' + config['gwas_columns']['variant_id']
+    else:
+        var_cmd = ''
+    rule harmonize:
+        input:
+            gwas = config['gwas_file']
+        output:
+            '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'
+        shell:
+            'python {config[metaxcan_path]}/M03_betas.py \
+                --snp_map_file {config[snp_map]} \
+                --gwas_file {input.gwas} \
+                {var_cmd} \
+                --non_effect_allele_column {config[non_effect_allele]} \
+                --effect_allele_column {config[effect_allele]} \
+                --beta_column {config[effect_size]} \
+                --pvalue_column {config[pvalues]} \
+                --keep_non_rsid \
+                --throw \
+                --output {output[0]}'
+            
