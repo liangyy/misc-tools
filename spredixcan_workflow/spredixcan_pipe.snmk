@@ -10,7 +10,7 @@ def get_output_column_map_commands(in_dict):
     out = []
     for kk in in_dict.keys():
         val = in_dict[kk]
-        out.append(f'--output_column_map {val} {kk}')
+        out.append(f'-output_column_map {val} {kk}')
     return out
 
 rule all_harmonization:
@@ -45,10 +45,10 @@ elif harmonization_type == 'simple':
                 --snp_map_file {config[snp_map]} \
                 --gwas_file {input.gwas} \
                 {var_cmd} \
-                --non_effect_allele_column {config[non_effect_allele]} \
-                --effect_allele_column {config[effect_allele]} \
-                --beta_column {config[effect_size]} \
-                --pvalue_column {config[pvalues]} \
+                --non_effect_allele_column {config[gwas_columns][non_effect_allele]} \
+                --effect_allele_column {config[gwas_columns][effect_allele]} \
+                --beta_column {config[gwas_columns][effect_size]} \
+                --pvalue_column {config[gwas_columns][pvalue]} \
                 --keep_non_rsid \
                 --throw \
                 --output {output[0]}'

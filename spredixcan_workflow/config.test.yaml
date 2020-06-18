@@ -1,27 +1,27 @@
 gwas_tool_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/summary-gwas-imputation/src'
 metaxcan_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/MetaXcan/software'
 harmonization_type: 'full'  # or 'simple'
-gwas_file: 'test_gwas.txt.gz'
+gwas_file: '/scratch/t.cri.yliang/predixcan_simulation/test_gwas.txt.gz'
 
 # provide column information of the GWAS
 gwas_columns:
-  chromosome: 'chr'  # necessary            
-  position: 'position'  # necessary 
-  effect_allele: 'A2'  # necessary 
-  non_effect_allele: 'A1'  # necessary 
-  pvalue: 'pval'  # necessary 
-  beta_se: 'se'  # necessary 
-  effect_size: 'bhat'  # necessary 
-  sample_size: 'Nsample'  # optional
-  variant_id: 'snpid'  # optional
+  chromosome: '"#CHR"'  # necessary            
+  position: 'POS'  # necessary 
+  effect_allele: 'ALT'  # necessary 
+  non_effect_allele: 'REF'  # necessary 
+  pvalue: 'all_inv_var_meta_p'  # necessary 
+  beta_se: 'all_inv_var_meta_sebeta'  # necessary 
+  effect_size: 'all_inv_var_meta_beta'  # necessary 
+  # sample_size: 'Nsample'  # optional
+  variant_id: 'SNP'  # optional
 
 # for full harmonization
 extra_command:  # these will be appended to the script call
   - '-liftover /scratch/t.cri.yliang/predixcan_simulation/data/hg19ToHg38.over.chain.gz'  # add liftover 
   - '-snp_reference_metadata /scratch/t.cri.yliang/predixcan_simulation/data/gtex_v8_eur_filtered_maf0.01_monoallelic_variants.txt.gz METADATA'  # add a snp reference metadata so map to the desired variant panel
   - '--chromosome_format'  # manually add this flag to add chr to chr_col
-  # - '--insert_value sample_size 102022'  # manually insert sample_size
-  # - '--insert_value n_cases 60801'  # manually insert number of cases
+  - '--insert_value sample_size 676313'  # manually insert sample_size
+  - '--insert_value n_cases 1678'  # manually insert number of cases
 
 # for simple harmonization
 snp_map: '/gpfs/data/im-lab/nas40t2/abarbeira/projects/gtex_v8/data_formatting/dbsnp/results/snp150_hg19_parsed.txt.gz'
