@@ -4,7 +4,9 @@ Everything is derived from [this tutorial in MetaXcan wiki](https://github.com/h
 The workflow allows both harmonization and dirty/quick harmonization.
 
 
-TODO: need to fix the following error:
+TODO: need to fix the following error.
+UPDATE: it is due to the fact that simple harmonization needs the input GWAS to have SNP ID (e.g. rsID) which is not the main interest for now.
+FIXME in the future ..
 ```
 Traceback (most recent call last):
   File "/gpfs/data/im-lab/nas40t2/yanyul/GitHub/MetaXcan/software/M03_betas.py", line 179, in <module>
@@ -29,3 +31,4 @@ Command 'python /gpfs/data/im-lab/nas40t2/yanyul/GitHub/MetaXcan/software/M03_be
 Will exit after finishing currently running jobs.
 Exiting because a job execution failed. Look above for error message
 ``` 
+

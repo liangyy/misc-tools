@@ -13,6 +13,10 @@ def get_output_column_map_commands(in_dict):
         out.append(f'-output_column_map {val} {kk}')
     return out
 
+rule all:
+    input:
+        '{outdir}/spredixcan.{name_tag}.harmonization_{harmonization_type}.csv'.format(**config)
+
 rule all_harmonization:
     input:
         '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'.format(**config)
@@ -53,4 +57,21 @@ elif harmonization_type == 'simple':
                 --throw \
                 {config[simple_extra_command]} \
                 --output {output[0]}'
+            
+rule spredixcan:
+    input:
+        gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'
+        db = config['predict_db'],
+        cov = config['predict_db_cov']
+    output:
+        '{outdir}/spredixcan.{name_tag}.harmonization_{harmonization_type}.csv'
+    shell:
+        'python {config[metaxcan_path]}/SPrediXcan.py \
+            --gwas_file {input[0]} \
+            --snp_column panel_variant_id --effect_allele_column effect_allele --non_effect_allele_column non_effect_allele --zscore_column zscore \
+            --model_db_path {input.db} \
+            --covariance {input.cov} \
+            {config[spredixcan_extra_command]} \
+            --output_file {output[0]}'
+            
             
