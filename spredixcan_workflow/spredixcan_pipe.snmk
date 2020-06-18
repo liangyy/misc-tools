@@ -28,7 +28,7 @@ if harmonization_type == 'full':
             'python {config[gwas_tool_path]}/gwas_parsing.py \
                 -gwas_file {input.gwas} \
                 -output {output[0]} \
-                {config[extra_command]} \
+                {config[full_extra_command]} \
                 {col_cmd}'
 elif harmonization_type == 'simple':
     if 'variant_id' in config['gwas_columns']:
@@ -51,5 +51,6 @@ elif harmonization_type == 'simple':
                 --pvalue_column {config[gwas_columns][pvalue]} \
                 --keep_non_rsid \
                 --throw \
+                {config[simple_extra_command]} \
                 --output {output[0]}'
             
