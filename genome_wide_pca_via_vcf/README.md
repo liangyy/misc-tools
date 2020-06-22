@@ -7,6 +7,6 @@ Dependency:
 
 Versions:
 
-* `plink`: `PLINK v1.90b6.17 64-bit (28 Apr 2020)`
+* `plink`: `PLINK v2.00a3LM AVX2 Intel (31 May 2020)`
 * `gcta`: `version 1.93.2 beta Linux`
 
