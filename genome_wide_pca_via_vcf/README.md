@@ -10,3 +10,6 @@ Versions:
 * `plink2`: `PLINK v2.00a3LM AVX2 Intel (31 May 2020)`
 * `gcta`: `version 1.93.2 beta Linux`
 
+Concrete example:
+
+[link](https://github.com/liangyy/haplotype-po/tree/master/scripts/framingham_detour/calc_pca)
