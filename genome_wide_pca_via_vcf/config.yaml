@@ -3,6 +3,9 @@ gcta_exec: '/lambda_stor/data/yanyul/softwares/gcta_1.93.2beta/gcta64'
 vcf: '/lambda_stor/data/yanyul/Framingham/imputed_hrc1.1/chr{chr_num}.dose.vcf.gz'
 sample_list: '/lambda_stor/data/yanyul/Framingham/haplotype_po_framingham/preprocess/all_indiv_w_genotype.txt'
 grm_args: '--maf 0.05'
+gcta_threads: 2
+plink_threads: 2
+plink_memory_in_mb: 16000 
 chromosomes: 
 #   - 1
 #   - 2
