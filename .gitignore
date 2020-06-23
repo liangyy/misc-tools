@@ -2,3 +2,6 @@
 *.err
 *.out
 __pycache__/
+output
+.snakemake
+
