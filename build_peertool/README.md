@@ -1,4 +1,4 @@
-As I encountered many failures on building `peertools`, I left this note to record the occasional success for future reference.
+As I encountered many failures on building `peertool`, I left this note to record the occasional success for future reference.
 
 # Prerequisite
 
@@ -25,4 +25,4 @@ make install
 
 # Result
 
-The executable `peertools` will be installed at `path-to-install/bin`
+The executable `peertool` will be installed at `path-to-install/bin`
