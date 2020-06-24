@@ -78,4 +78,4 @@ message('Dimension of data matrix: ', 'N = ', dim(mat)[1], '; G = ', dim(mat)[2]
 mat_imp = impute::impute.knn(as.matrix(t(mat)))
 write.table(t(as.matrix(mat_imp$data)), opt$output, row = F, col = F, quo = F, sep = ',')
 
-write.table(data.frame(x = indiv_list), col = F, row = F, quo = F)
+write.table(data.frame(x = indiv_list), opt$output_indiv_list, col = F, row = F, quo = F)

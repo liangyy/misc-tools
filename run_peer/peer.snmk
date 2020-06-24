@@ -3,7 +3,7 @@ if 'outdir' not in config:
 
 rule all:
     input:
-        '{outdir}/{name_tag}/X.csv'.format(**config)
+        '{outdir}/{name_tag}.peer.tsv.gz'.format(**config)
 
 rule prepare_input:
     input:
@@ -16,7 +16,8 @@ rule prepare_input:
         '{outdir}/{name_tag}.mat.csv',
         '{outdir}/{name_tag}.indiv_list.txt'
     shell:
-        'Rscript prepare_input.R --input {input[0]} --skip_cols {params[1]} --if_transpose {params[0]} --indiv_col {param[2]} --output {output[0]}'
+        'Rscript prepare_input.R --input {input[0]} --skip_cols {params[1]} --if_transpose {params[0]} --indiv_col {params[2]} \
+             --output {output[0]} --output_indiv_list {output[1]}'
 
 rule run_peer:
     input:
@@ -46,7 +47,7 @@ rule final_matrix:
         config['skip_cols'],
         config['indiv_col']
     output:
-        '{outdir/{name_tag}.peer.tsv.gz}'
+        '{outdir}/{name_tag}.peer.tsv.gz'
     shell:
         'Rscript finalize_matrix.R --input_x {input[0]} --indiv_list {input[1]} --output {output[0]}'
         

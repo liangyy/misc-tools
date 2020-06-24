@@ -23,8 +23,9 @@ options(datatable.fread.datatable = FALSE)
 peer = fread(opt$input_x, sep = ',', header = FALSE)
 indiv_list = as.character(read.table(opt$indiv_list, header = FALSE)$V1)
 
-peer = cbind(indiv_list, peer)
-colnames(peer) = c('individual_id', paste0('PEER', 1 : (ncol(peer) - 1)))
+colnames(peer) = indiv_list
+peer_id_col = data.frame(covariate = paste0('PEER', 1 : nrow(peer)))
+peer = cbind(peer_id_col, peer)
 
 gz1 <- gzfile(opt$output, "w")
 write.table(peer, gz1, row = FALSE, col = TRUE, quo = F, sep = '\t')
