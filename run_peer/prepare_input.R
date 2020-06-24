@@ -12,6 +12,12 @@ option_list <- list(
                 metavar="character"),
     make_option(c("-o", "--output"), type="character", default=NULL,
                 help="output CSV (X.csv in peer)",
+                metavar="character"),
+    make_option(c("-n", "--output_indiv_list"), type="character", default=NULL,
+                help="output individual list (the rownames)",
+                metavar="character"),
+    make_option(c("-d", "--indiv_col"), type="character", default=NULL,
+                help="column name of individual id column. It will be used only when if_transpose = No",
                 metavar="character")
 )
 
@@ -54,10 +60,22 @@ take_care_of_transpose = function(df, if_transpose) {
 }
 
 mat = myread(opt$input)
+
+if(opt$if_transpose == 'No') {
+  indiv_list = as.character(mat[, opt$indiv_col])
+}
+
 mat = skip_cols(mat, opt$skip_cols)
+
+if(opt$if_transpose == 'Yes') {
+  indiv_list = colnames(mat)
+}
+
 mat = take_care_of_transpose(mat, opt$if_transpose)
 message('Dimension of data matrix: ', 'N = ', dim(mat)[1], '; G = ', dim(mat)[2])
 
 ## Impute missing cells as suggested in paper
 mat_imp = impute::impute.knn(as.matrix(t(mat)))
 write.table(t(as.matrix(mat_imp$data)), opt$output, row = F, col = F, quo = F, sep = ',')
+
+write.table(data.frame(x = indiv_list), col = F, row = F, quo = F)

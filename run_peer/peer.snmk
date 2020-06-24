@@ -10,11 +10,13 @@ rule prepare_input:
         config['data_matrix']
     params:
         config['if_transpose'],
-        config['skip_cols']
+        config['skip_cols'],
+        config['indiv_col']
     output:
-        '{outdir}/{name_tag}.mat.csv'
+        '{outdir}/{name_tag}.mat.csv',
+        '{outdir}/{name_tag}.indiv_list.txt'
     shell:
-        'Rscript prepare_input.R --input {input[0]} --skip_cols {params[1]} --if_transpose {params[0]} --output {output[0]}'
+        'Rscript prepare_input.R --input {input[0]} --skip_cols {params[1]} --if_transpose {params[0]} --indiv_col {param[2]} --output {output[0]}'
 
 rule run_peer:
     input:
@@ -34,3 +36,17 @@ rule run_peer:
           echo "$line" >> {log}
         done
         '''
+
+rule final_matrix:
+    input:
+        '{outdir}/{name_tag}/X.csv',
+        '{outdir}/{name_tag}.indiv_list.txt'
+    params:
+        config['if_transpose'],
+        config['skip_cols'],
+        config['indiv_col']
+    output:
+        '{outdir/{name_tag}.peer.tsv.gz}'
+    shell:
+        'Rscript finalize_matrix.R --input_x {input[0]} --indiv_list {input[1]} --output {output[0]}'
+        
