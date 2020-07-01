@@ -4,7 +4,11 @@ if 'nfactor' in config:
     nf_option = '-n {}'.format(config['nfactor'])
 else:
     nf_option = ''
-    
+
+# peer call default parameter
+# from https://github.com/broadinstitute/gtex-pipeline/blob/master/qtl/src/run_PEER.R
+my_peer_default = '-i 1000 --e_pb 10 --e_pa 0.1 --a_pb 0.01 --a_pa 0.001'  
+
 rule all:
     input:
         '{outdir}/{name_tag}.peer.tsv.gz'.format(**config)
@@ -35,7 +39,7 @@ rule run_peer:
     shell:
         '''
         echo "START" > {log} 
-        stdbuf -oL {config[path_to_peertool]} -f {input[0]} {nf_option} -o {wildcards.outdir}/{wildcards.name_tag} |
+        stdbuf -oL {config[path_to_peertool]} -f {input[0]} {nf_option} {my_peer_default} -o {wildcards.outdir}/{wildcards.name_tag} |
         while IFS= read -r line
         do
           echo "$line" >> {log}
