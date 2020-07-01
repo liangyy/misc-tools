@@ -1,6 +1,10 @@
 if 'outdir' not in config:
     config['outdir'] = 'output'
-
+if 'nfactor' in config:
+    nf_option = '-n {}'.format(config['nfactor'])
+else:
+    nf_option = ''
+    
 rule all:
     input:
         '{outdir}/{name_tag}.peer.tsv.gz'.format(**config)
@@ -31,7 +35,7 @@ rule run_peer:
     shell:
         '''
         echo "START" > {log} 
-        stdbuf -oL {config[path_to_peertool]} -f {input[0]} -n {config[nfactor]} -i 1000 -o {wildcards.outdir}/{wildcards.name_tag} --e_pb 10 --e_pa 0.1 --a_pb 0.01 --a_pa 0.001 |
+        stdbuf -oL {config[path_to_peertool]} -f {input[0]} {nf_option} -o {wildcards.outdir}/{wildcards.name_tag} |
         while IFS= read -r line
         do
           echo "$line" >> {log}
