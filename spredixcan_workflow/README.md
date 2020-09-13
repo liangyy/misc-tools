@@ -9,7 +9,7 @@ The command to works for CRI is:
 ```
 export SNMK=/gpfs/data/im-lab/nas40t2/yanyul/softwares/miniconda2/envs/mixqtl/bin/snakemake
 conda activate metaxcan
-$SNMK -s spredixcan_pipe.snmk --configfile config.test.yaml -p
+$SNMK -s spredixcan_pipe.snmk --configfile config.test.yaml -p --config tissue=Whole_Blood
 ```
 
 TODO: need to fix the following error.

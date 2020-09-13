@@ -28,7 +28,7 @@ def get_outputs(config):
         return [ outstr.format(gwas_tag=i, **config) for i in l ]
     raise ValueError('Need gwas_tag or trait_list.')
 
-geno_arg, geno_inputs = load_genotype_files(config)
+geno_inputs, geno_arg = load_genotype_files(config)
 snp_list_opt = add_snplist_opt(config)
 
 rule all:
@@ -47,11 +47,12 @@ rule ld_clump_chr:
         pval_field = config['gwas_format']['pval_field'],
         memory = config['plink_memory_in_mb'],
         thread = config['plink_threads'],
-        out = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr{chr_num}'
+        out = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr{chr_num}',
+        geno_arg = geno_arg
     shell:
         '''
         {config[plink_cmd]} \
-           {geno_arg} \
+           {params.geno_arg} \
            --clump {input.gwas} \
            --clump-p1 1 \
            --clump-r2 0.1 \
