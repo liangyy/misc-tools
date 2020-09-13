@@ -1,0 +1,78 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+    
+def load_genotype_files(config):
+    if config['genotype']['type'] == 'plink':
+        return [ config['genotype']['prefix'] + '.{}'.format(i) for i in ['bim', 'bed', 'fam'] ], '--bfile {}'.format(config['genotype']['prefix'])
+    elif config['genotype']['type'] == 'vcf':
+        return config['genotype']['vcf'], '--vcf {}'.format(config['genotype']['vcf'])
+    else:
+        raise ValueError('Do not support the genotype format for now.')
+
+def add_snplist_opt(config):
+    if 'snplist' in config:
+        return '--extract {}'.format(config['snplist'])
+    else:
+        return ''
+
+def get_outputs(config):
+    outstr = '{outdir}/gwas_clump_x_{gwas_tag}.clumped_snp'
+    if 'trait_list' not in config:
+        if 'gwas_tag' in config:
+            return outstr.format(**config)
+    else:
+        with open(config['trait_list']) as f:
+            l = []
+            for i in l:
+                l.append(i.strip())
+        return [ outstr.format(gwas_tag=i, **config) for i in l ]
+    raise ValueError('Need gwas_tag or trait_list.')
+
+geno_arg, geno_inputs = load_genotype_files(config)
+snp_list_opt = add_snplist_opt(config)
+
+rule all:
+    input:
+        get_outputs(config)
+
+rule ld_clump_chr:
+    input:
+        geno = geno_inputs,
+        gwas = config['gwas']
+    output:
+        o1 = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr{chr_num}.clumped',
+        o2 = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr{chr_num}.valid.snp'
+    params:
+        snp_field = config['gwas_format']['snp_field'],
+        pval_field = config['gwas_format']['pval_field'],
+        memory = config['plink_memory_in_mb'],
+        thread = config['plink_threads'],
+        out = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr{chr_num}'
+    shell:
+        '''
+        {config[plink_cmd]} \
+           {geno_arg} \
+           --clump {input.gwas} \
+           --clump-p1 1 \
+           --clump-r2 0.1 \
+           --clump-kb 250 \
+           --clump-snp-field {params.snp_field} \
+           --clump-field {params.pval_field} \
+           --memory {params.memory} \
+           --threads {params.thread} \
+           {snp_list_opt} \
+           --out {params.out}
+        if [[ ! -f {output.o1} ]]; then touch {output.o1}; fi; awk \'{{if(NR!=1 && NF>0){{print $3}}}}\' {output.o1} > {output.o2}
+        '''
+
+rule merge_ld_clump:
+    input:
+        temp([ '{{outdir}}/tmp_{{gwas_tag}}/gwas_clump_x_chr{chr_num}.valid.snp'.format(chr_num=i) for i in range(1, 23) ])
+    output:
+        '{outdir}/gwas_clump_x_{gwas_tag}.clumped_snp'
+    params:
+        prefix = '{outdir}/tmp_{gwas_tag}/gwas_clump_x_chr',
+        suffix = '.valid.snp'
+    shell:
+        'cat {params.prefix}1{params.suffix} > {output[0]}; for i in `seq 2 22`; do cat {params.prefix}$i{params.suffix} >> {output[0]}; done'        
+        
