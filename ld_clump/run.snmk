@@ -23,7 +23,7 @@ def get_outputs(config):
     else:
         with open(config['trait_list']) as f:
             l = []
-            for i in l:
+            for i in f:
                 l.append(i.strip())
         return [ outstr.format(gwas_tag=i, **config) for i in l ]
     raise ValueError('Need gwas_tag or trait_list.')
