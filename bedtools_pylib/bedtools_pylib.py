@@ -16,7 +16,7 @@ def snp2bed(df_snp):
     df_snp2bed = df_snp2bed[['chromosome', 'start', 'end', 'variant_id']]
     return df_snp2bed
 
-def intersect_with_bed(df_snp, annot_bed, tmp_prefix='test'):
+def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
     '''
     df_snp: pandas DataFrame containing SNP information in each row. It has the
             following columns: variant_id, chromosome, position.
@@ -33,7 +33,11 @@ def intersect_with_bed(df_snp, annot_bed, tmp_prefix='test'):
     annot = df.variant_id.isin(ee.iloc[:, 3]) * 1
     os.remove(f'{tmp_prefix}.join.bed.gz')
     os.remove(f'{tmp_prefix}.bed.gz')
-    df = pd.DataFrame({'VARIANT': variant_list, 'cCRE': annot})
-    return df
+    if inplace is True:
+        df_snp['annot'] = annot
+    else:
+        df_snp2 = df_snp.copy()
+        df_snp2['annot'] = annot
+        return df_snp2
     
     
