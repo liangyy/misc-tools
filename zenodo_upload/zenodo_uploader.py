@@ -64,7 +64,7 @@ if __name__ == '__main__':
         for i in f:
             i = i.strip()
             filename = ntpath.basename(i)
-            info.logging(f'Processing {filename}')
+            logging.info(f'Processing {filename}')
             with open(i, "rb") as fp:
                 r = requests.put(
                     "%s/%s" % (bucket_url, filename),
