@@ -52,12 +52,13 @@ if __name__ == '__main__':
     # 3. extract the bucket link of the depository
     # 4. upload files to the bucket
     # skip step 1 and 2 if args.depository is not None
-    
-    if args.depository is not None:
+   
+     
+    token = load_token(args.token)
+    params = {'access_token': token}
+    headers = {"Content-Type": "application/json"}
+    if args.depository is None:
         # step 1
-        token = load_token(args.token)
-        params = {'access_token': token}
-        headers = {"Content-Type": "application/json"}
         r = requests.post("https://zenodo.org/api/deposit/depositions", params=params, headers=headers, json={})
         latest_draft = r.json()['links']['latest_draft']
         bucket_url = r.json()['links']['bucket']
@@ -67,7 +68,7 @@ if __name__ == '__main__':
         r = requests.put(latest_draft, params=params, data=json.dumps(meta), headers=headers)
     else:
         latest_draft = "https://zenodo.org/api/deposit/depositions/{}".format(args.depository)
-        r = requests.post(latest_draft, params=params, headers=headers, json={})
+        r = requests.get(latest_draft, params=params, headers=headers, json={})
         bucket_url = r.json()['links']['bucket']
         
     logging.info('Use depository = {}'.format(latest_draft))
