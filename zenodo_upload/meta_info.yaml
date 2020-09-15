@@ -1,0 +1,5 @@
+data:
+  metadata:
+    title: 'Full summary statistics of mixQTL for GTEx v8 Kidney Cortex'
+    upload_type: 'dataset'
+    description: 'The mixQTL method is described in [link](https://www.biorxiv.org/content/10.1101/2020.04.22.050666v1). \n Please cite the original paper if using the data.'
