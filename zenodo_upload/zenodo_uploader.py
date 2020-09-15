@@ -17,6 +17,10 @@ if __name__ == '__main__':
         Upload a list of files to zenodo.
         It will create one zenodo deposite and upload all files there.
     ''')
+    parser.add_argument('--depository', default=None, help='''
+        If want to append to existing depository, set the ID here.
+        Otherwise, new depository will be generated.
+    ''')
     parser.add_argument('--meta-yaml', help='''
         A yaml file containing some meta data to fill along with the files.
     ''')
@@ -47,18 +51,26 @@ if __name__ == '__main__':
     # 2. update the meta data
     # 3. extract the bucket link of the depository
     # 4. upload files to the bucket
+    # skip step 1 and 2 if args.depository is not None
     
-    # step 1
-    token = load_token(args.token)
-    params = {'access_token': token}
-    headers = {"Content-Type": "application/json"}
-    r = requests.post("https://zenodo.org/api/deposit/depositions", params=params, headers=headers, json={})
-    latest_draft = r.json()['links']['latest_draft']
-    bucket_url = r.json()['links']['bucket']
-    
-    # step 2
-    meta = load_yaml(args.meta_yaml)
-    r = requests.put(latest_draft, params=params, data=json.dumps(meta), headers=headers)
+    if args.depository is not None:
+        # step 1
+        token = load_token(args.token)
+        params = {'access_token': token}
+        headers = {"Content-Type": "application/json"}
+        r = requests.post("https://zenodo.org/api/deposit/depositions", params=params, headers=headers, json={})
+        latest_draft = r.json()['links']['latest_draft']
+        bucket_url = r.json()['links']['bucket']
+        
+        # step 2
+        meta = load_yaml(args.meta_yaml)
+        r = requests.put(latest_draft, params=params, data=json.dumps(meta), headers=headers)
+    else:
+        latest_draft = "https://zenodo.org/api/deposit/depositions/{}".format(args.depository)
+        r = requests.post(latest_draft, params=params, headers=headers, json={})
+        bucket_url = r.json()['links']['bucket']
+        
+    logging.info('Use depository = {}'.format(latest_draft))
     
     # step 3
     with open(args.file_list, 'r') as f:
