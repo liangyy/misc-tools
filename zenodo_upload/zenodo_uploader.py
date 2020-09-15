@@ -40,6 +40,7 @@ if __name__ == '__main__':
     
     import requests
     import ntpath
+    import json
     
     # steps:
     # 1. create a depository
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     
     # step 2
     meta = load_yaml(args.meta_yaml)
-    r = requests.put(latest_draft, params=params, data=meta, headers=headers)
+    r = requests.put(latest_draft, params=params, data=json.dumps(meta), headers=headers)
     
     # step 3
     with open(args.file_list, 'r') as f:
