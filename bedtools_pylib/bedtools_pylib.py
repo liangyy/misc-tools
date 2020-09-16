@@ -1,7 +1,8 @@
+import os
 import pandas as pd
 
 def save_bed(ff, filename):
-    ff = ff.sort_values(by='start', ascending=True, na_position='first')
+    ff = ff.sort_values(by=['chromosome', 'start'], ascending=True, na_position='first')
     ff.to_csv(filename, sep='\t', index=False, header=False, compression='gzip')
 
 def snp2bed(df_snp):
@@ -30,7 +31,7 @@ def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
     sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {annot_bed} | gzip > {tmp_prefix}.join.bed.gz'
     os.system(sys_call)
     ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
-    annot = df.variant_id.isin(ee.iloc[:, 3]) * 1
+    annot = df_snp.variant_id.isin(ee.iloc[:, 3]) * 1
     os.remove(f'{tmp_prefix}.join.bed.gz')
     os.remove(f'{tmp_prefix}.bed.gz')
     if inplace is True:
