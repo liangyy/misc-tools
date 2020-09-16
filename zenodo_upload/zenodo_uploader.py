@@ -1,4 +1,5 @@
 import yaml
+import requests
 
 def load_token(filename):
     with open(filename, 'r') as f:
@@ -10,6 +11,20 @@ def load_yaml(ff):
     with open(ff, 'r') as f:
         e = yaml.safe_load(f)
     return e
+
+def check_nfile(depository, token):
+    token = load_token(token)
+    params = {'access_token': token}
+    headers = {"Content-Type": "application/json"}
+    r = requests.get(
+        'https://zenodo.org/api/deposit/depositions/{}'.format(depository), 
+        params=params, json={}, headers=headers
+    )
+    tmp = r.json()
+    if 'files' not in tmp:
+        print('No file')
+    else:
+        print('{} file(s)'.format(len(tmp['files'])))
 
 if __name__ == '__main__':
     import argparse
@@ -42,7 +57,6 @@ if __name__ == '__main__':
         datefmt = '%Y-%m-%d %I:%M:%S %p'
     )
     
-    import requests
     import ntpath
     import json
     
