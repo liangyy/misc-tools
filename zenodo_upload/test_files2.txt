@@ -1,0 +1,1 @@
+/scratch/t.cri.yliang/mixQTL-GTExV8/mixqtl/Whole_Blood/mixqtl.Whole_Blood_GTEx_eGene.cis_qtl_pairs.mixQTL.chr22.parquet
