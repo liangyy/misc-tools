@@ -11,7 +11,7 @@ def liftover(chr, pos, chainfile):
     lo = LiftOver(chainfile)
     
     # formatting chromosome
-    if chr[0] is not chr or 'chr' not in chr[0]:
+    if (not isinstance(chr[0], str)) or ('chr' not in chr[0]):
         chr = [ 'chr' + str(i) for i in chr ]
         
     pos = pos - 1  # pyliftover uses base-0
