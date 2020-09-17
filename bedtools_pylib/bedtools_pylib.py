@@ -33,7 +33,7 @@ def snp2bed(df_snp):
 def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
     '''
     df_snp: pandas DataFrame containing SNP information in each row. It has the
-            following columns: variant_id, chromosome, position.
+            following columns: variant_id, chromosome, position (1-based). 
     annot_bed: the bed file to work with.
     tmp_prefix: the function will generate some intermediate files using this prefix. 
                 Make sure that there is no more than one function call using this 
@@ -58,7 +58,59 @@ def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
 def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_prefix='test'):
     '''
     df_region: pandas DataFrame containing information of region in each row. 
-    It has the use_cols columns listing chromosome, start, end in order.
+    It has the use_cols columns listing chromosome, start, end (1-based) in order.
     It will intersect with the bedfile and 
-    annotate with the columns listed in indexes_in_bed. 
+    annotate with the columns listed in indexes_in_bed (1-based). 
+    Return all rows in df_region regardless of being intersected or not.
     '''
+    tmp_prefix = clean_prefix(tmp_prefix)
+    
+    if len(use_cols) != 3:
+        raise ValueError('Need three columns for use_cols.')
+        
+    df_region2bed = df_region[use_cols].copy()
+    df_region2bed.columns = ['chromosome', 'start', 'end']
+    df_region2bed.start = df_region2beds.start - 1  # change to 0-based
+    df_region2bed['region_identifier'] = [ i for i in range(df_region2bed.shape[0]) ]
+    save_bed(df_region2bed, f'{tmp_prefix}.bed.gz')
+    
+    sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {annot_bed} -wa -wb | gzip > {tmp_prefix}.join.bed.gz'
+    os.system(sys_call)
+    ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
+    
+    cols_to_keep = [ i for i in range(df_region2bed.shape[1]) ] + [ df_region2bed.shape[1] + i - 1 for i in indexes_in_bed ]
+    names_to_use = ['chromosome', 'start', 'end', 'region_identifier'] + [ 'annot_{}' for i in range(len(indexes_in_bed)) ]
+    ee = ee.iloc[:, cols_to_keep]
+    ee.columns = names_to_use
+    
+    df_return = df_region.copy()
+    df_return = pd.merge(df_return, ee.iloc[:, 3:], on='region_identifier', how='left')
+    df_return = df_return.drop(columns='region_identifier')
+    
+    return df_return 
+    
+def annotate_region_with_df(df_region, df2, use_cols, df2_region_cols, df2_other_cols, suffix, tmp_prefix):
+    '''
+    Annotate df with df2.
+    df_region: pandas DataFrame containing information of region in each row. 
+    It has the use_cols columns listing chromosome, start, end (1-based) in order.
+    df2 should have chromosome, start, end (1-based) in order 
+    which are listed in df2_region_cols.
+    Specify the columns to add in df2_other_cols 
+    '''
+    tmp_prefix = clean_prefix(tmp_prefix)
+    
+    # save df2 as bed file
+    if len(df2_region_cols) != 3:
+        raise ValueError('Need three columns for use_cols.')
+    df2_to_bed = df2[df2_region_cols + df2_other_cols].copy()
+    df2_to_bed[df2_region_cols[1]] = df2_to_bed[df2_region_cols[1]] - 1  # change to 0-based
+    bed_df2 = f'{tmp_prefix}.df2.bed.gz'
+    save_bed(df2_to_bed, bed_df2)
+    
+    indexes_in_bed = [ 3 + i for i in range(len(df2_other_cols)) ]
+    tmp = annotate_region_with_bed(df_region, bed_df2, use_cols, indexes_in_bed)
+    tmp.columns[-len(df2_other_cols):] = [ f'{i}_{suffix}' for i in df2_other_cols ]
+    
+    return tmp
+    
