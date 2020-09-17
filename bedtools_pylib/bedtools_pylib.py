@@ -41,4 +41,10 @@ def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
         df_snp2['annot'] = annot
         return df_snp2
     
-    
+def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_prefix='test'):
+    '''
+    df_region: pandas DataFrame containing information of region in each row. 
+    It has the use_cols columns listing chromosome, start, end in order.
+    It will intersect with the bedfile and 
+    annotate with the columns listed in indexes_in_bed. 
+    '''
