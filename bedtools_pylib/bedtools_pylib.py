@@ -67,14 +67,15 @@ def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_p
     
     if len(use_cols) != 3:
         raise ValueError('Need three columns for use_cols.')
-        
-    df_region2bed = df_region[use_cols].copy()
-    df_region2bed.columns = ['chromosome', 'start', 'end']
-    df_region2bed.start = df_region2beds.start - 1  # change to 0-based
-    df_region2bed['region_identifier'] = [ i for i in range(df_region2bed.shape[0]) ]
+    
+    df_return = df_region.copy()
+    df_return['region_identifier'] = [ i for i in range(df_return.shape[0]) ]
+    df_region2bed = df_return[use_cols + ['region_identifier']].copy()
+    df_region2bed.columns = ['chromosome', 'start', 'end', 'region_identifier']
+    df_region2bed.start = df_region2bed.start - 1  # change to 0-based
     save_bed(df_region2bed, f'{tmp_prefix}.bed.gz')
     
-    sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {annot_bed} -wa -wb | gzip > {tmp_prefix}.join.bed.gz'
+    sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {bedfile} -wa -wb | gzip > {tmp_prefix}.join.bed.gz'
     os.system(sys_call)
     ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
     os.remove(f'{tmp_prefix}.join.bed.gz')
@@ -85,7 +86,6 @@ def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_p
     ee = ee.iloc[:, cols_to_keep]
     ee.columns = names_to_use
     
-    df_return = df_region.copy()
     df_return = pd.merge(df_return, ee.iloc[:, 3:], on='region_identifier', how='left')
     df_return = df_return.drop(columns='region_identifier')
     
@@ -110,10 +110,12 @@ def annotate_region_with_df(df_region, df2, use_cols, df2_region_cols, df2_other
     bed_df2 = f'{tmp_prefix}.df2.bed.gz'
     save_bed(df2_to_bed, bed_df2)
     
-    indexes_in_bed = [ 3 + i for i in range(len(df2_other_cols)) ]
+    indexes_in_bed = [ 1 + i for i in range(len(df2_other_cols + df2_region_cols)) ]
     tmp = annotate_region_with_bed(df_region, bed_df2, use_cols, indexes_in_bed)
     os.remove(f'{tmp_prefix}.df2.bed.gz')
-    tmp.columns[-len(df2_other_cols):] = [ f'{i}_{suffix}' for i in df2_other_cols ]
+    cols = list(tmp.columns)
+    cols[-len(df2_region_cols + df2_other_cols):] = [ f'{i}{suffix}' for i in df2_region_cols + df2_other_cols ]
+    tmp.columns = cols
     
     return tmp
     
