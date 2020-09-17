@@ -1,5 +1,18 @@
 import os
 import pandas as pd
+import ntpath
+
+def clean_prefix(ff):
+    '''
+    Make sure that the prefix ff is not longer than 240 characters
+    '''
+    basename = ntpath.basename(ff)
+    if len(basename) > 240:
+        new_name = basename[:240]
+        dir_ = os.path.dirname(ff)
+        return f'{dir_}/{new_name}'
+    else:
+        return ff
 
 def save_bed(ff, filename):
     ff = ff.sort_values(by=['chromosome', 'start'], ascending=True, na_position='first')
@@ -26,6 +39,7 @@ def intersect_with_bed(df_snp, annot_bed, inplace=True, tmp_prefix='test'):
                 Make sure that there is no more than one function call using this 
                 prefix at the same time.
     '''
+    tmp_prefix = clean_prefix(tmp_prefix)
     df_snp2bed = snp2bed(df_snp)
     save_bed(df_snp2bed, f'{tmp_prefix}.bed.gz')
     sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {annot_bed} | gzip > {tmp_prefix}.join.bed.gz'
