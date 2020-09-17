@@ -7,8 +7,8 @@ def clean_prefix(ff):
     Make sure that the prefix ff is not longer than 240 characters
     '''
     basename = ntpath.basename(ff)
-    if len(basename) > 240:
-        new_name = basename[:240]
+    if len(basename) > 230:
+        new_name = basename[:230]
         dir_ = os.path.dirname(ff)
         return f'{dir_}/{new_name}'
     else:
@@ -77,6 +77,8 @@ def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_p
     sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {annot_bed} -wa -wb | gzip > {tmp_prefix}.join.bed.gz'
     os.system(sys_call)
     ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
+    os.remove(f'{tmp_prefix}.join.bed.gz')
+    os.remove(f'{tmp_prefix}.bed.gz')
     
     cols_to_keep = [ i for i in range(df_region2bed.shape[1]) ] + [ df_region2bed.shape[1] + i - 1 for i in indexes_in_bed ]
     names_to_use = ['chromosome', 'start', 'end', 'region_identifier'] + [ 'annot_{}' for i in range(len(indexes_in_bed)) ]
@@ -110,6 +112,7 @@ def annotate_region_with_df(df_region, df2, use_cols, df2_region_cols, df2_other
     
     indexes_in_bed = [ 3 + i for i in range(len(df2_other_cols)) ]
     tmp = annotate_region_with_bed(df_region, bed_df2, use_cols, indexes_in_bed)
+    os.remove(f'{tmp_prefix}.df2.bed.gz')
     tmp.columns[-len(df2_other_cols):] = [ f'{i}_{suffix}' for i in df2_other_cols ]
     
     return tmp
