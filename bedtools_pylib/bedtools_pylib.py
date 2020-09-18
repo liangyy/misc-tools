@@ -77,14 +77,18 @@ def annotate_region_with_bed(df_region, bedfile, use_cols, indexes_in_bed, tmp_p
     
     sys_call = f'bedtools intersect -a {tmp_prefix}.bed.gz -b {bedfile} -wa -wb | gzip > {tmp_prefix}.join.bed.gz'
     os.system(sys_call)
-    ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
+
+    cols_to_keep = [ i for i in range(df_region2bed.shape[1]) ] + [ df_region2bed.shape[1] + i - 1 for i in indexes_in_bed ]
+    names_to_use = ['chromosome', 'start', 'end', 'region_identifier'] + [ f'annot_{i}' for i in range(len(indexes_in_bed)) ]
+
+    try:
+        ee = pd.read_csv(f'{tmp_prefix}.join.bed.gz', compression='gzip', sep='\t', header=None)
+        ee = ee.iloc[:, cols_to_keep]
+        ee.columns = names_to_use
+    except pd.errors.EmptyDataError:
+        ee = pd.DataFrame({k: [] for k in names_to_use})
     os.remove(f'{tmp_prefix}.join.bed.gz')
     os.remove(f'{tmp_prefix}.bed.gz')
-    
-    cols_to_keep = [ i for i in range(df_region2bed.shape[1]) ] + [ df_region2bed.shape[1] + i - 1 for i in indexes_in_bed ]
-    names_to_use = ['chromosome', 'start', 'end', 'region_identifier'] + [ 'annot_{}' for i in range(len(indexes_in_bed)) ]
-    ee = ee.iloc[:, cols_to_keep]
-    ee.columns = names_to_use
     
     df_return = pd.merge(df_return, ee.iloc[:, 3:], on='region_identifier', how='left')
     df_return = df_return.drop(columns='region_identifier')
