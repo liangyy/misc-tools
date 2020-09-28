@@ -42,10 +42,10 @@ if __name__ == '__main__':
     )
     
     logging.info('Loading table.')
-    df = pd.read_csv(args.input, sep='\t', header=0)
+    df = pd.read_csv(args.input, sep='\s+', header=0)
     pop = args.colname
-    if pop not in df.columns or indiv not in df.columns:
-        raise ValueError('Colnames are not in input table.')
+    if pop not in df.columns:
+        raise ValueError('Colname is not in input table.')
     colnames = [pop]
     colnames = union(colnames, args.output_cols)
     outnames = args.output_cols
@@ -55,10 +55,10 @@ if __name__ == '__main__':
     logging.info('Extracting.')
     if args.mode == 'match':
         df = df[ df[pop] == args.by ].reset_index(drop=True)
-    elif args.mode == 'gt':
-        maf = df[pop]
+    elif args.mode == 'maf':
+        maf = df[pop].values
         maf[maf > 0.5] = 1 - df[pop][maf > 0.5]
-        df = df[ maf > float(args.gt) ].reset_index(drop=True)
+        df = df[ maf > float(args.by) ].reset_index(drop=True)
     logging.info('Extracted {} instances.'.format(df.shape[0]))
     
     logging.info('Output.')

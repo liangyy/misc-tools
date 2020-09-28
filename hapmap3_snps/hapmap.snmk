@@ -24,7 +24,7 @@ rule extract_individuals:
     input:
         indiv_list = config['individual_list']['file']
     output:
-        '{outdir}/{name_tag}_pop_{pop_tag}.txt'
+        '{outdir}/{name_tag}_pop_{pop_tag}.individual.txt'
     params:
         pop_col = config['individual_list']['pop_col'],
         indiv_col = config['individual_list']['indiv_col'],
@@ -32,7 +32,7 @@ rule extract_individuals:
     shell:
         'python extract.py \
             --input {input.indiv_list} \
-            --colnames {params.pop_col} {params.indiv_col} \
+            --colname {params.pop_col} \
             --output_cols {params.fam_col} {params.indiv_col} \
             --by {wildcards.pop_tag} \
             --output {output[0]}'
@@ -40,16 +40,17 @@ rule extract_individuals:
 rule compute_maf:
     input:
         files = genotype_files,
-        list = '{outdir}/{name_tag}_pop_{pop_tag}.txt'
+        list = '{outdir}/{name_tag}_pop_{pop_tag}.individual.txt'
     output:
         '{outdir}/{name_tag}_pop_{pop_tag}.frq'
     params:
-        '{outdir}/{name_tag}_pop_{pop_tag}
+        '{outdir}/{name_tag}_pop_{pop_tag}'
     shell:
         '{config[plink1.9]} \
           {genotype_command} \
           --freq \
           --keep {input.list} \
+          --memory {config[plink_mem_in_mb]} \
           --out {params[0]}'
 
 rule filter_by_maf:
@@ -59,11 +60,10 @@ rule filter_by_maf:
         '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}.txt'
     shell:
         'python extract.py \
-            --input {input.indiv_list} \
+            --input {input[0]} \
             --colname MAF \
             --output_cols SNP \
             --mode maf \
             --by {wildcards.maf} \
-            --memory {config[plink_mem_in_mb]} \
             --output {output[0]}'
     

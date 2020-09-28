@@ -1,4 +1,6 @@
 name_tag: 'hapmap3_eur'
+pop_tag: 'CEU'
+maf: 0.01
 individual_list:
   file: '/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/relationships_w_pops_121708.txt'
   pop_col: 'population'
