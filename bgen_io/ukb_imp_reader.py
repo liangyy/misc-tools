@@ -1,4 +1,5 @@
 import bgen_reader
+import numpy as np
 class UKBReader:
     
     def __init__(self, bgen, metafile, sample, copy_from=None, byid='rsid'):
@@ -7,22 +8,19 @@ class UKBReader:
           key being byid = rsid or id; 
           value being the index in genotype file.
         '''
-        self.bgen = bgen_reader.read_bgen(bgen, metafile_filepath=metafile, samples_filepath=sample)
-        self.samples = self.bgen["samples"].tolist()
+        self.bgen = bgen_reader.open_bgen(bgen, metafile_filepath=metafile, samples_filepath=sample)
         self.byid = byid
 
         if copy_from is None:
-            self.variant_df = self.bgen['variants'].compute() 
             self._init_id_dict()
         else:
-            self.variant_df = copy_from.variant_df.copy()
             self.id_dict = copy_from.id_dict.copy()
         
     def _init_id_dict(self):
         if self.byid == 'rsid':
-            self.id_dict = { self.variant_df.rsid[i]: i for i in range(self.variant_df.shape[0]) }
+            self.id_dict = { self.rsids[i]: i for i in range(len(self.rsids)) }
         elif self.byid == 'id':
-            self.id_dict = { self.variant_df.id[i]: i for i in range(self.variant_df.shape[0]) }
+            self.id_dict = { self.ids[i]: i for i in range(len(self.ids)) }
         else:
             raise ValueError('Only support rsid and id.')
     
@@ -36,10 +34,11 @@ class UKBReader:
         if snpid not in self.id_dict:
             # the id is not valid
             return None
-        res = self.bgen['genotype'][self.id_dict[snpid]].compute()
-        dosage = res['probs']
-        dosage = dosage[:, 1] + 2 * dosage[:, 2]
-        dosage[res['missing']] = dosage[~res['missing']].mean()
+        dosage = self.bgen.read([self.id_dict[snpid]])
+        # dosage: nsample x nvariant (=1) x n_allele_combinations
+        dosage = dosage[:, 0, 1] + 2 * dosage[:, 0, 2]
+        missing = np.isnan(dosage, axis=1)
+        dosage[missing] = np.nanmean(dosage)
         return dosage 
 
     def dosage_generator(self, id_list):
