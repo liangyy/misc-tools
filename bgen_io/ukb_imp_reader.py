@@ -71,8 +71,10 @@ class UKBReader:
         dosage = pandas2ri.ri2py(cached_data[4])
         # dosage: nvariant (we have 1 here) x nsample x num_of_allele_combination
         dosage = dosage[:, :, 1] + 2 * dosage[:, :, 2]
-        missing = np.where(np.isnan(dosage))[0]
-        dosage[missing[0], missing[1]] = np.nanmean(dosage, axis=1)[missing[0]]
+        missing_ind = np.isnan(dosage)
+        if missing_ind.sum() > 0:
+            missing = np.where(missing_ind)[0]
+            dosage[missing[0], missing[1]] = np.nanmean(dosage, axis=1)[missing[0]]
         return dosage 
 
     def dosage_generator(self, id_list):
