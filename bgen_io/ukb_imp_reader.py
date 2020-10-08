@@ -14,8 +14,15 @@ class UKBReader:
         self.bgen_path = bgen
         self.bgi_path = bgi
         self.sample_path = sample
+        self._init_rsid()
         # self._index_variant()
     
+    def _init_rsid(self):
+        with sqlite3.connect(self.bgi_path) as conn:
+            variants = conn.execute('select * from Variant').fetchall()
+        self.rsids = [ v[2] for v in variants ]
+
+
     # def _index_variant(self):
     #     if hasattr(self, 'variant_index'):
     #         return
