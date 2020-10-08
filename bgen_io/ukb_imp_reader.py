@@ -1,28 +1,32 @@
-import bgen_reader
+import gc
+import sqlite3
+import pandas as pd
 import numpy as np
+from rpy2.robjects.vectors import StrVector
+from rpy2.robjects.packages import importr
+from rpy2.robjects import pandas2ri
+pandas2ri.activate()
+
 class UKBReader:
     
-    def __init__(self, bgen, sample, copy_from=None, byid='rsid', verbose=False):
-        '''
-        Initialize self.id_dict as a dictionary with 
-          key being byid = rsid or id; 
-          value being the index in genotype file.
-        '''
-        self.bgen = bgen_reader.open_bgen(bgen, samples_filepath=sample, verbose=verbose)
-        self.byid = byid
-
-        if copy_from is None:
-            self._init_id_dict()
-        else:
-            self.id_dict = copy_from.id_dict.copy()
-        
-    def _init_id_dict(self):
-        if self.byid == 'rsid':
-            self.id_dict = { self.bgen.rsids[i]: i for i in range(len(self.bgen.rsids)) }
-        elif self.byid == 'id':
-            self.id_dict = { self.bgen.ids[i]: i for i in range(len(self.bgen.ids)) }
-        else:
-            raise ValueError('Only support rsid and id.')
+    def __init__(self, bgen, bgi, sample):
+        self.rbgen = importr("rbgen")
+        self.bgen_path = bgen
+        self.bgi_path = bgi
+        self.sample_path = sample
+        # self._index_variant()
+    
+    # def _index_variant(self):
+    #     if hasattr(self, 'variant_index'):
+    #         return
+    #     with sqlite3.connect(self.bgi_path) as conn:
+    #         variants = conn.execute('select * from Variant').fetchall()
+    #     self.variant_index = {}
+    #     for i_ in range(len(variants)):
+    #         i = variants[i_]
+    #         varid = i[2]
+    #         my_var_id = '{}:{}:{}:{}'.format(i[0], i[1], i[4], i[5])
+    #         self.variant_index[my_var_id] = varid
     
     def get_dosage_by_id(self, snpid):
         '''
@@ -31,12 +35,15 @@ class UKBReader:
         dosage[:, 1] + 2 * dosage[:, 2].
         The samples labelled as missing will be imputed to population mean.
         '''
-        if snpid not in self.id_dict:
-            # the id is not valid
-            return None
-        dosage = self.bgen.read([self.id_dict[snpid]])
-        # dosage: nsample x nvariant (=1) x n_allele_combinations
-        dosage = dosage[:, 0, 1] + 2 * dosage[:, 0, 2]
+        cached_data = self.rbgen.bgen_load(
+            self.bgen_path,
+            index_filename=self.bgi_path,
+            rsids=snpid, 
+            max_entries_per_sample=4
+        )
+        dosage = pandas2ri.ri2py(cached_data[4])
+        # dosage: nvariant (we have 1 here) x nsample x num_of_allele_combination
+        dosage = dosage[0, :, 1] + 2 * dosage[0, :, 2]
         missing = np.isnan(dosage)
         dosage[missing] = np.nanmean(dosage)
         return dosage 
