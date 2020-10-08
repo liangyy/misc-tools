@@ -1,17 +1,22 @@
 import bgen_reader
 class UKBReader:
     
-    def __init__(self, bgen, metafile, sample, byid='rsid'):
+    def __init__(self, bgen, metafile, sample, copy_from=None, byid='rsid'):
         '''
         Initialize self.id_dict as a dictionary with 
           key being byid = rsid or id; 
           value being the index in genotype file.
         '''
         self.bgen = bgen_reader.read_bgen(bgen, metafile_filepath=metafile, samples_filepath=sample)
-        self.variant_df = self.bgen['variants'].compute() 
         self.samples = self.bgen["samples"].tolist()
         self.byid = byid
-        self._init_id_dict()
+
+        if copy_from is None:
+            self.variant_df = self.bgen['variants'].compute() 
+            self._init_id_dict()
+        else:
+            self.variant_df = copy_from.variant_df.copy()
+            self.id_dict = copy_from.id_dict.copy()
         
     def _init_id_dict(self):
         if self.byid == 'rsid':
