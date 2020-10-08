@@ -80,3 +80,27 @@ class UKBReader:
     def dosage_generator(self, id_list):
         for snpid in id_list:
             yield self.get_dosage_by_id(snpid)
+    
+    @staticmethod
+    def _split_list_into_chunks(mylist, chunk_size):
+        ntotal = len(mylist)
+        nchunk = ntotal // chunk_size 
+        if ntotal > chunk_size * nchunk:
+            nchunk += 1
+        curr_chunk = []
+        chunk_list = []
+        for i in mylist:
+            curr_chunk.append(i)
+            if len(curr_chunk) == chunk_size:
+                chunk_list.append(curr_chunk)
+                curr_chunk = []
+        if len(curr_chunk) != 0:
+            chunk_list.append(curr_chunk)
+        return chunk_list
+        
+    def dosage_generator_by_chunk(self, id_list, chunk_size=20):
+        
+        chunk_list = self._split_list_into_chunks(id_list, chunk_size)
+            
+        for snp_chunk in chunk_list:
+            yield self.get_dosage_by_chunk(snp_chunk), snp_chunk
