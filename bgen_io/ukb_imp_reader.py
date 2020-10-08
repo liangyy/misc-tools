@@ -2,13 +2,13 @@ import bgen_reader
 import numpy as np
 class UKBReader:
     
-    def __init__(self, bgen, metafile, sample, copy_from=None, byid='rsid'):
+    def __init__(self, bgen, sample, copy_from=None, byid='rsid', verbose=False):
         '''
         Initialize self.id_dict as a dictionary with 
           key being byid = rsid or id; 
           value being the index in genotype file.
         '''
-        self.bgen = bgen_reader.open_bgen(bgen, metafile_filepath=metafile, samples_filepath=sample)
+        self.bgen = bgen_reader.open_bgen(bgen, samples_filepath=sample, verbose=verbose)
         self.byid = byid
 
         if copy_from is None:
@@ -18,9 +18,9 @@ class UKBReader:
         
     def _init_id_dict(self):
         if self.byid == 'rsid':
-            self.id_dict = { self.rsids[i]: i for i in range(len(self.rsids)) }
+            self.id_dict = { self.bgen.rsids[i]: i for i in range(len(self.bgen.rsids)) }
         elif self.byid == 'id':
-            self.id_dict = { self.ids[i]: i for i in range(len(self.ids)) }
+            self.id_dict = { self.bgen.ids[i]: i for i in range(len(self.bgen.ids)) }
         else:
             raise ValueError('Only support rsid and id.')
     
@@ -37,7 +37,7 @@ class UKBReader:
         dosage = self.bgen.read([self.id_dict[snpid]])
         # dosage: nsample x nvariant (=1) x n_allele_combinations
         dosage = dosage[:, 0, 1] + 2 * dosage[:, 0, 2]
-        missing = np.isnan(dosage, axis=1)
+        missing = np.isnan(dosage)
         dosage[missing] = np.nanmean(dosage)
         return dosage 
 
