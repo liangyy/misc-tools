@@ -1,6 +1,11 @@
 import sqlite3
 import pandas as pd
 
+PAIRED_BASE = {
+    'A': 'T', 'T': 'A',
+    'G': 'C', 'C': 'G'
+}
+
 def read_list(fn):
     o = []
     with open(fn, 'r') as f:
@@ -30,7 +35,7 @@ def extract_var_df(bgi, snpset):
     res = pd.DataFrame(o)
     res.drop_duplicates(subset=['rsid'], keep=False, inplace=True)
     res['is_ambiguous'] = is_ambiguous(res.a0.tolist(), res.a1.tolist())
-    return pd.DataFrame(o)
+    return res
 
 def is_ambiguous(a0, a1):
     o = []
@@ -77,8 +82,11 @@ if __name__ == '__main__':
     for i in range(1, 23):
         logging.info(f'Working on chromosome{i}.')
         bgi = args.ukb_bgi.format(chr_num=i)
-        df_var, ndrop = extract_var_df(bgi, snpset)
-        res.append(df_var.rsid.tolist())
+        df_var = extract_var_df(bgi, snpset)
+        n0 = df_var.shape[0]
+        df_var = df_var[ ~ df_var.is_ambiguous ].reset_index(drop=True)
+        logging.info('Working on chromosome {}: before {} SNPs; after {} SNPs'.format(i, n0, df_var.shape[0]))
+        res += df_var.rsid.tolist()
     
     logging.info('Writing results.')    
     write_list(args.output, res)
