@@ -20,9 +20,25 @@ class UKBReader:
     def _init_rsid(self):
         with sqlite3.connect(self.bgi_path) as conn:
             variants = conn.execute('select * from Variant').fetchall()
-        self.rsids = [ v[2] for v in variants ]
-        self.a0 = [ v[4] for v in variants ]
-        self.a1 = [ v[5] for v in variants ]
+        self.rsids = set([ v[2] for v in variants ])
+        # self.a0 = [ v[4] for v in variants ]
+        # self.a1 = [ v[5] for v in variants ]
+    
+    def check_rsid(self, rsid_list):
+        '''
+        Check if each element of rsid_list is in the bgen file.
+        Return the list containing the elements that are in the bgen only. 
+        '''
+        if hasattr(self, 'rsids'):
+            o = []
+            for rsid in rsid_list:
+                if rsid in self.rsids:
+                    o.append(rsid)
+            return o
+        else:
+            self._init_rsid()
+            self.check_rsid(rsid_list)
+        
     
     def get_dosage_by_id(self, snpid):
         '''
