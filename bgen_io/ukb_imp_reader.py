@@ -77,7 +77,7 @@ class UKBReader:
         with localconverter(ro.default_converter + pandas2ri.converter):
             df_var = ro.conversion.rpy2py(cached_data[0])
             dosage = ro.conversion.rpy2py(cached_data[4])
-        # dosage: nvariant (we have 1 here) x nsample x num_of_allele_combination
+        # dosage: nvariant (we have several here) x nsample x num_of_allele_combination
         dosage = dosage[:, :, 1] + 2 * dosage[:, :, 2]
         missing_ind = np.isnan(dosage)
         if missing_ind.sum() > 0:
@@ -125,15 +125,19 @@ class UKBReader:
                 curr_idx = []
         if len(curr_chunk) != 0:
             chunk_list.append(curr_chunk)
+            idx_list.append(curr_idx)
         return chunk_list, idx_list
     
     def get_nchunk(self, id_list, chunk_size=20):
+        chunk_size = min(chunk_size, len(id_list)) 
         chunk_list, idx_list = self._split_list_into_chunks(id_list, chunk_size)
         return len(chunk_list)
     
     def dosage_generator_by_chunk(self, id_list, chunk_size=20):
         chunk_size = min(chunk_size, len(id_list)) 
         chunk_list, idx_list = self._split_list_into_chunks(id_list, chunk_size)
-            
+        
         for snp_chunk, idx_chunk in zip(chunk_list, idx_list):
             yield self.get_dosage_by_chunk(snp_chunk), snp_chunk, idx_chunk
+
+
