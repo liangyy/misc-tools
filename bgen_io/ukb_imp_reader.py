@@ -2,10 +2,11 @@ import gc
 import sqlite3
 import pandas as pd
 import numpy as np
+import rpy2.robjects as ro
 from rpy2.robjects.vectors import StrVector
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
-pandas2ri.activate()
+from rpy2.robjects.conversion import localconverter
 
 class UKBReader:
     
@@ -57,8 +58,9 @@ class UKBReader:
             rsids=StrVector(snpid_list), 
             max_entries_per_sample=4
         )
-        dosage = pandas2ri.ri2py(cached_data[4])
-        df_var = pandas2ri.ri2py(cached_data[0])
+        with localconverter(ro.default_converter + pandas2ri.converter):
+            df_var = ro.conversion.rpy2py(cached_data[0])
+            dosage = ro.conversion.rpy2py(cached_data[4])
         # dosage: nvariant (we have 1 here) x nsample x num_of_allele_combination
         dosage = dosage[:, :, 1] + 2 * dosage[:, :, 2]
         missing_ind = np.isnan(dosage)

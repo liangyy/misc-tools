@@ -9,6 +9,8 @@ And then, I used `bgen-reader v4.0.4` Numpy API with installation as suggested i
 But it takes too long to initialize.
 
 With such failure, I have to go back to `rbgen`.
+The code relies on Python-R interface. 
+We used `rpy2` version 3.3.6 (*note that it won't support v2 due to the changed interface*).
 
 # About 
 
