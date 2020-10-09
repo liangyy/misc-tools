@@ -65,7 +65,23 @@ class UKBReader:
         if missing_ind.sum() > 0:
             missing = np.where(missing_ind)[0]
             dosage[missing[0], missing[1]] = np.nanmean(dosage, axis=1)[missing[0]]
-        return dosage, df_var.allele0.tolist(), df_var.allele1.tolist()
+        # need to handle potential duplicated snpid (due to multialleleic)
+        _, dup_idx = np.unique(df_var.rsid.tolist(), return_index=True)
+        dosage = dosage[dup_idx, :]
+        df_var = df_var.iloc[ dup_idx, : ]
+        # need to reorder so that it is the same as input query
+        match_idx = self.match_y_to_x(df_var.rsid.values, np.array(snpid_list))
+        df_var = df_var.iloc[ match_idx, : ]
+        return dosage[match_idx, :], df_var.allele0.tolist(), df_var.allele1.tolist(), df_var.rsid.tolist()
+    
+    @staticmethod
+    def match_y_to_x(x, y):
+        '''
+        x, y are 1d np.array 
+        y is a subset of x.
+        return idx such that x[idx] = y
+        '''
+        return np.where(y.reshape(y.size, 1) == x)[1]
 
     def dosage_generator(self, id_list):
         for snpid in id_list:
@@ -98,7 +114,7 @@ class UKBReader:
         return len(chunk_list)
     
     def dosage_generator_by_chunk(self, id_list, chunk_size=20):
-        
+        chunk_size = min(chunk_size, len(id_list)) 
         chunk_list, idx_list = self._split_list_into_chunks(id_list, chunk_size)
             
         for snp_chunk, idx_chunk in zip(chunk_list, idx_list):
