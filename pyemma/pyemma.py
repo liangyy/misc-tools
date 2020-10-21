@@ -107,14 +107,17 @@ def fisher_information(params, ytil, lambda_):
 def newton_raphson(obj_, jacob_, x_init, args, tol=1e-10):
     x_curr = x_init
     diff = float('inf')
-    while diff > tol:
-        x = x_curr - np.linalg.solve(
-            jacob_(x_curr, *args), 
-            obj_(x_curr, *args)
-        ) 
-        diff = ((x - x_curr) ** 2).sum()
-        x_curr = x  
-    return x_curr
+    try:
+        while diff > tol:
+            x = x_curr - np.linalg.solve(
+                jacob_(x_curr, *args), 
+                obj_(x_curr, *args)
+            ) 
+            diff = ((x - x_curr) ** 2).sum()
+            x_curr = x
+        return x_curr
+    except np.linalg.LinAlgError:
+        return x_curr
 
 def delta_method(mu, varcov, h_fun, h_grad):
     '''
@@ -152,6 +155,9 @@ def calc_vp(est, varcov):
 
 def calc_h2(est, varcov):
     return delta_method(est, varcov, ratio_fun, ratio_grad)
+
+def null_df():
+    return pd.DataFrame({'LR': np.nan, 'Vg': np.nan, 'Ve': np.nan, 'Vp': np.nan, 'Vg_SE': np.nan, 'Ve_SE': np.nan, 'Vp_SE': np.nan, 'h2': np.nan, 'h2_SE': np.nan, 'L0': np.nan, 'L1': np.nan}, index=[0])
 
 def pyemma_reml_mat_fac(X, grm):
     Q, _ = np.linalg.qr(X)
@@ -198,7 +204,7 @@ def pyemma_reml(y, grm_eig_vec, grm_eig_val, ori_grm_eig_vec, ori_grm_eig_val, X
             'h2': h2,
             'h2_SE': np.sqrt(h2_var),
             'L0': ll0,
-            'L1': ll - 0.5 * ytil.shape[0] * np.log(2 * np.pi)
+            'L1': ll # - 0.5 * ytil.shape[0] * np.log(2 * np.pi)
         }, 
         index=[0]
     )
@@ -208,7 +214,7 @@ def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
     ytil = grm_eig_vec.T @ y
     Xtil = grm_eig_vec.T @ X
     beta = np.zeros((X.shape[1]))
-    soln_v = np.zeros(2)
+    soln_v = np.log(np.ones(2) * y.var() / 2)  # np.zeros(2)
     diff = tol + 1
     while diff > tol:
         resid = ytil - Xtil @ beta
@@ -219,7 +225,7 @@ def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
             jac=grad
         )
         if soln_curr.success is False:
-            return None
+            return null_df() 
         soln_refined = newton_raphson(
             grad, 
             jacob, 
@@ -273,12 +279,12 @@ def pyemma_no_X(y, grm_eig_vec, grm_eig_val):
     ytil = grm_eig_vec.T @ y
     soln_curr = scipy.optimize.minimize(
         fun=obj, 
-        x0=np.zeros(2), 
+        x0=np.log(np.ones(2) * y.var() / 2),   # np.array([-0.5, -0.5]), # np.zeros(2), 
         args=(ytil, grm_eig_val),
         jac=grad
     )
     if soln_curr.success is False:
-        return None
+        return null_df()
     soln_refined = newton_raphson(
         grad, 
         jacob, 
