@@ -209,12 +209,34 @@ def pyemma_reml(y, grm_eig_vec, grm_eig_val, ori_grm_eig_vec, ori_grm_eig_val, X
         index=[0]
     )
     return res
-    
+
+def initialize_with_grid(y, ytil, lambda_, Xtil=None, ngrid=20):
+    scale = y.var()
+    ratio_seq = np.arange(ngrid) / ngrid
+    ratio_seq = ratio_seq[1:] # remove the leading zero
+    lld = []
+    for ratio in ratio_seq:
+        ve = ratio * scale
+        vr = (1 - ratio) * scale
+        soln = np.log([ve, vr])
+        if Xtil is not None:
+            W = 1 / (ve + vr * lambda_)
+            beta = np.linalg.solve(calc_XtWX(Xtil, W), Xtil.T @ (W * ytil))
+            resid = ytil - Xtil @ beta
+            lld.append(- obj(soln, resid, lambda_))
+        else:
+            lld.append(- obj(soln, ytil, lambda_))
+    ratio_opt = ratio_seq[np.nanargmax(np.array(lld))]
+    ve = ratio_opt * scale
+    vr = (1 - ratio_opt) * scale
+    return np.log([ve, vr])    
+
 def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
     ytil = grm_eig_vec.T @ y
     Xtil = grm_eig_vec.T @ X
     beta = np.zeros((X.shape[1]))
-    soln_v = np.log(np.ones(2) * y.var() / 2)  # np.zeros(2)
+    Q, _ = np.linalg.qr(X)
+    soln_v = initialize_with_grid(y - Q @ (Q.T @ y), ytil, grm_eig_val, Xtil=Xtil)
     diff = tol + 1
     while diff > tol:
         resid = ytil - Xtil @ beta
@@ -277,9 +299,10 @@ def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
 
 def pyemma_no_X(y, grm_eig_vec, grm_eig_val):
     ytil = grm_eig_vec.T @ y
+    soln_init = initialize_with_grid(y, ytil, grm_eig_val)
     soln_curr = scipy.optimize.minimize(
         fun=obj, 
-        x0=np.log(np.ones(2) * y.var() / 2),   # np.array([-0.5, -0.5]), # np.zeros(2), 
+        x0=soln_init,   # np.array([-0.5, -0.5]), # np.zeros(2), 
         args=(ytil, grm_eig_val),
         jac=grad
     )
