@@ -212,23 +212,27 @@ def pyemma_reml(y, grm_eig_vec, grm_eig_val, ori_grm_eig_vec, ori_grm_eig_val, X
 
 def initialize_with_grid(y, ytil, lambda_, Xtil=None, ngrid=20):
     scale = y.var()
+    scale_seq = np.array([scale * 0.5, scale, scale * 2])
     ratio_seq = np.arange(ngrid) / ngrid
     ratio_seq = ratio_seq[1:] # remove the leading zero
-    lld = []
-    for ratio in ratio_seq:
-        ve = ratio * scale
-        vr = (1 - ratio) * scale
-        soln = np.log([ve, vr])
-        if Xtil is not None:
-            W = 1 / (ve + vr * lambda_)
-            beta = np.linalg.solve(calc_XtWX(Xtil, W), Xtil.T @ (W * ytil))
-            resid = ytil - Xtil @ beta
-            lld.append(- obj(soln, resid, lambda_))
-        else:
-            lld.append(- obj(soln, ytil, lambda_))
-    ratio_opt = ratio_seq[np.nanargmax(np.array(lld))]
-    ve = ratio_opt * scale
-    vr = (1 - ratio_opt) * scale
+    lld = np.zeros((3, ratio_seq.shape[0]))
+    for si, scale in enumerate(scale_seq):
+        for ri, ratio in enumerate(ratio_seq):
+            ve = ratio * scale
+            vr = (1 - ratio) * scale
+            soln = np.log([ve, vr])
+            if Xtil is not None:
+                W = 1 / (ve + vr * lambda_)
+                beta = np.linalg.solve(calc_XtWX(Xtil, W), Xtil.T @ (W * ytil))
+                resid = ytil - Xtil @ beta
+                lld[si][ri] = - obj(soln, resid, lambda_)
+            else:
+                lld[si][ri] = - obj(soln, ytil, lambda_)
+    opt_idx = np.unravel_index(np.nanargmax(lld, axis=None), lld.shape)
+    ratio_opt = ratio_seq[opt_idx[1]]
+    scale_opt = scale_seq[opt_idx[0]]
+    ve = ratio_opt * scale_opt
+    vr = (1 - ratio_opt) * scale_opt
     return np.log([ve, vr])    
 
 def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
