@@ -1,5 +1,5 @@
 Here I provide a light weight variance component solver on the basis of [EMMA](http://mouse.cs.ucla.edu/emma/).
-Currently, I only implemented no-covariate version. 
+Currently, I implemented both MLE and REML based estimations. 
 The solver uses Python numpy as backend.
 
 It provides the following minimal functionality:
