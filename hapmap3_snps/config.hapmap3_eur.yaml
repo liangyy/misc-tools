@@ -11,3 +11,4 @@ genotypes:
   map: '/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r2_b36_fwd.consensus.qc.poly.map'
 plink1.9: 'plink'  # on CRI: module load gcc/6.2.0; module load plink/1.90
 plink_mem_in_mb: 10000
+misc_tools_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/'

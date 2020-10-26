@@ -13,12 +13,12 @@ def filter_out_ambiguious_snps(df):
     ['chr', 'rsid', 'placeholder', 'pos', 'a1', 'a2']
     '''
     is_ambi = []
-    for a, b in zip(df.a1.to_list(), df.a2.to_list()):
+    for a, b in zip(list(df.a1), list(df.a2)):
         if SNP_PAIR[a] == b:
             is_ambi.append(True)
         else:
             is_ambi.append(False)
-    df = df[np.logical_not(np.array(df))].reset_index(drop=True)
+    df = df[np.logical_not(np.array(is_ambi))].reset_index(drop=True)
     return df        
             
 if __name__ == '__main__':
@@ -47,12 +47,13 @@ if __name__ == '__main__':
         datefmt = '%Y-%m-%d %I:%M:%S %p'
     )
     
+    import pandas as pd
     from pyutil import load_list, intersection, write_list
     snp_list = load_list(args.input)
     df_bim = pd.read_csv(args.input_bim, sep='\s+', header=None)
     df_bim.columns = ['chr', 'rsid', 'placeholder', 'pos', 'a1', 'a2']
     
     df_bim = filter_out_ambiguious_snps(df_bim)
-    snp_list = intersection(snp_list, df_bim.rsid.to_list())
+    snp_list = intersection(snp_list, list(df_bim.rsid))
     write_list(snp_list, args.output)
     

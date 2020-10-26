@@ -18,7 +18,7 @@ genotype_command, genotype_files = get_genotypes(config)
 
 rule all:
     input:
-        '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}.txt'.format(**config)
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config)
 
 rule extract_individuals:
     input:
@@ -85,9 +85,10 @@ rule filter_by_ambiguity:
         '{outdir}/{name_tag}_genotype.bim',
         '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}.txt'
     output:
-        '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}_no_ambiguity.txt'
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'
     shell:
-        'python filter_out_ambiguious_snps.py \
+        'export PYTHONPATH={config[misc_tools_path]}/pyutil:$PYTHONPATH; python filter_out_ambiguious_snps.py \
             --input {input[1]} \
             --input_bim {input[0]} \
             --output {output[0]}'
+
