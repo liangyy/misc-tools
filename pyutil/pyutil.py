@@ -29,7 +29,12 @@ def load_list(fn):
         for i in f:
             o.append(i.strip())
     return o
-    
+
+def write_list(mylist, fn):
+    with open(fn, 'w') as f:
+        for l in mylist:
+            f.write(l + '\n')
+
 def intersection(l1, l2):
     a = set(l1)
     a = a.intersection(set(l2))

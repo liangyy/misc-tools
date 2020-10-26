@@ -66,4 +66,28 @@ rule filter_by_maf:
             --mode maf \
             --by {wildcards.maf} \
             --output {output[0]}'
-    
+
+rule get_bim_file:
+    input:
+        files = genotype_files
+    output:
+        '{outdir}/{name_tag}_genotype.bim'
+    params:
+        '{outdir}/{name_tag}_genotype'
+    shell:
+        '{config[plink1.9]} \
+          {genotype_command} \
+          --make-just-bim \
+          --out {params[0]}'
+
+rule filter_by_ambiguity:
+    input:
+        '{outdir}/{name_tag}_genotype.bim',
+        '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}.txt'
+    output:
+        '{outdir}/{name_tag}_pop_{pop_tag}_maf_{maf}_no_ambiguity.txt'
+    shell:
+        'python filter_out_ambiguious_snps.py \
+            --input {input[1]} \
+            --input_bim {input[0]} \
+            --output {output[0]}'
