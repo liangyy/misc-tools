@@ -29,4 +29,4 @@ else:
             list_cols.append(i)
     table = table[ cols + list_cols ]
     
-table.to_csv(args.output, compression='gzip', sep='\t', index=False)
+table.to_csv(args.output, sep='\t', index=False)
