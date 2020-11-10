@@ -58,6 +58,11 @@ elif harmonization_type == 'simple':
                 {config[simple_extra_command]} \
                 --output {output[0]}'
             
+if 'spredixcan_snp_col' in config:
+    snp_col = config['spredixcan_snp_col']
+else:
+    snp_col = 'panel_variant_id'
+
 rule spredixcan:
     input:
         gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz',
@@ -68,7 +73,7 @@ rule spredixcan:
     shell:
         'python {config[metaxcan_path]}/SPrediXcan.py \
             --gwas_file {input[0]} \
-            --snp_column panel_variant_id --effect_allele_column effect_allele --non_effect_allele_column non_effect_allele --zscore_column zscore \
+            --snp_column {snp_col} --effect_allele_column effect_allele --non_effect_allele_column non_effect_allele --zscore_column zscore \
             --model_db_path {input.db} \
             --covariance {input.cov} \
             {config[spredixcan_extra_command]} \
