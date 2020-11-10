@@ -63,6 +63,11 @@ if 'spredixcan_snp_col' in config:
 else:
     snp_col = 'panel_variant_id'
 
+if 'spredixcan_effect_cols' in config:
+    effect_cols = config['spredixcan_effect_cols']
+else:
+    effect_cols = '--zscore_column zscore'
+
 rule spredixcan:
     input:
         gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz',
@@ -73,7 +78,7 @@ rule spredixcan:
     shell:
         'python {config[metaxcan_path]}/SPrediXcan.py \
             --gwas_file {input[0]} \
-            --snp_column {snp_col} --effect_allele_column effect_allele --non_effect_allele_column non_effect_allele --zscore_column zscore \
+            --snp_column {snp_col} --effect_allele_column effect_allele --non_effect_allele_column non_effect_allele {effect_cols} \
             --model_db_path {input.db} \
             --covariance {input.cov} \
             {config[spredixcan_extra_command]} \
