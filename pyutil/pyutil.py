@@ -6,12 +6,16 @@ def file_exists(fn):
 
 def read_table(fn, indiv_col):
     _, fn_ext = os.path.splitext(fn)
+    if fn_ext == '.gz':
+        fn_new = re.sub('.gz$', '', fn)
+        compress_args = {'compression': 'gzip'}
+        _, fn_new = os.path.splitext(fn)
     if fn_ext == '.parquet':
         df = pd.read_parquet(fn)
     elif fn_ext == '.csv':
-        df = pd.read_csv(fn)
+        df = pd.read_csv(fn, **compress_args)
     elif fn_ext == '.txt' or fn_ext == '.tsv':
-        df = pd.read_csv(fn, sep='\s+')
+        df = pd.read_csv(fn, sep='\s+', **compress_args)
     for i in range(df.shape[1]):
         if df.columns[i] == indiv_col:
             break
