@@ -247,8 +247,9 @@ def pyemma_w_X(y, X, grm_eig_vec, grm_eig_val, tol=1e-10):
         soln_curr = scipy.optimize.minimize(
             fun=obj, 
             x0=soln_v, 
+            method='Nelder-Mead',
             args=(resid, grm_eig_val),
-            jac=grad
+            # jac=grad
         )
         if soln_curr.success is False:
             return null_df() 
@@ -306,9 +307,10 @@ def pyemma_no_X(y, grm_eig_vec, grm_eig_val):
     soln_init = initialize_with_grid(y, ytil, grm_eig_val)
     soln_curr = scipy.optimize.minimize(
         fun=obj, 
+        method='Nelder-Mead',
         x0=soln_init,   # np.array([-0.5, -0.5]), # np.zeros(2), 
         args=(ytil, grm_eig_val),
-        jac=grad
+        # jac=grad
     )
     if soln_curr.success is False:
         return null_df()
