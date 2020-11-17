@@ -1,10 +1,7 @@
 import pandas as pd
 import os.path
-<<<<<<< HEAD
 import yaml
-=======
 import re
->>>>>>> 1db427403248c25265a9f116c4545b0f0f7a877b
 
 def file_exists(fn):
     return os.path.isfile(fn)
