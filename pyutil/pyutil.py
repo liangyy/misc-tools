@@ -1,5 +1,6 @@
 import pandas as pd
 import os.path
+import yaml
 
 def file_exists(fn):
     return os.path.isfile(fn)
@@ -43,4 +44,10 @@ def intersection(l1, l2):
     a = set(l1)
     a = a.intersection(set(l2))
     return sorted(list(a))
+
+
+def read_yaml(yaml_):
+    with open(yaml_, 'r') as f:
+        o = yaml.safe_load(f)
+    return o
     

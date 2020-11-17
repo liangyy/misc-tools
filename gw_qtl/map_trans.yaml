@@ -1,0 +1,7 @@
+# map_trans(genotype_df, phenotype_df, covariates_df=None, interaction_s=None,
+#               return_sparse=True, pval_threshold=1e-5, maf_threshold=0.05,
+#               alleles=2, return_r2=False, batch_size=20000,
+#               logger=None, verbose=True)
+
+pval_threshold: 1.1
+maf_threshold: 0
