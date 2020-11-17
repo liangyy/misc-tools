@@ -1,15 +1,17 @@
 import pandas as pd
 import os.path
+import re
 
 def file_exists(fn):
     return os.path.isfile(fn)
 
 def read_table(fn, indiv_col):
     _, fn_ext = os.path.splitext(fn)
+    compress_args = {}
     if fn_ext == '.gz':
         fn_new = re.sub('.gz$', '', fn)
         compress_args = {'compression': 'gzip'}
-        _, fn_new = os.path.splitext(fn)
+        _, fn_ext = os.path.splitext(fn_new)
     if fn_ext == '.parquet':
         df = pd.read_parquet(fn)
     elif fn_ext == '.csv':
