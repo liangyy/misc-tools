@@ -3,6 +3,12 @@ import pandas as pd
 def transpose_df(df, col):
     return df.set_index(col).T
 
+def dict_to_str(dict_):
+    res = []
+    for k, v in dict_.items():
+        res.append(f'{k}: {v}') 
+    return ', '.join(res)
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(prog='run_trans_qtl.py', description='''
@@ -89,7 +95,7 @@ if __name__ == '__main__':
         map_args = {}
     else:
         map_args = read_yaml(args.map_trans_params)
-    logging.info('Arguments used for tensorqtl: ', map_args)
+    logging.info('Arguments used for tensorqtl: ', dict_to_str(map_args))
     
     logging.info('Start mapping.')
     pairs_df = trans.map_trans(

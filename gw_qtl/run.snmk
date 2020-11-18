@@ -1,3 +1,4 @@
+import re
 if 'outdir' not in config:
     config['outdir'] = 'output'
 
@@ -27,6 +28,8 @@ rule tensorqtl:
         geno_prefix = geno_prefix
     output:
         outstr
+    log: 
+        re.sub('/$', '.log', outstr)
     shell:
         '''
         export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
@@ -35,7 +38,8 @@ rule tensorqtl:
           --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
           --covariate_table {input.covar} {config[covariate][indiv_col]} \
           --covariate_yaml {input.covar_meta} \
-          --output_prefix {output[0]}/ \
-          --map_trans_params {config[map_trans_yaml]}
+          --output_prefix {output[0]} \
+          --map_trans_params {config[map_trans_yaml]} \
+          > {log}
         '''
 
