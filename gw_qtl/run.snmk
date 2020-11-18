@@ -2,6 +2,12 @@ import re
 if 'outdir' not in config:
     config['outdir'] = 'output'
 
+if 'ncores' not in config:
+    config['ncores'] = 1
+    ncores_opt = ''
+else:
+    ncores_opt = '--ncores {}'.format(config['ncores'])
+    
 outstr = '{outdir}/trans_qtl.{name_tag}/'
 if '{chr_num}' in config['genotype']:
     outstr = '{outdir}/trans_qtl.{name_tag}.chr{chr_num}/'
@@ -30,6 +36,8 @@ rule tensorqtl:
         outstr
     log: 
         re.sub('/$', '.log', outstr)
+    threads:
+        config['ncores']
     shell:
         '''
         export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
@@ -40,6 +48,7 @@ rule tensorqtl:
           --covariate_yaml {input.covar_meta} \
           --output_prefix {output[0]} \
           --map_trans_params {config[map_trans_yaml]} \
+          {ncores_opt} \
           > {log}
         '''
 

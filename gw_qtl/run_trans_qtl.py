@@ -43,6 +43,9 @@ if __name__ == '__main__':
     parser.add_argument('--individual_list_exclude', default=None, help='''
         The list of individuals to exclude from the analysis.
     ''')
+    parser.add_argument('--ncores', default=None, type=int, help='''
+        Number of cores to use.
+    ''')
     args = parser.parse_args()
  
     import logging, time, sys, os
@@ -59,6 +62,10 @@ if __name__ == '__main__':
     from util import exclude_b_from_a, load_covariate, load_phenotype, take_intersect, rearrange_rows, read_yaml
     import genotypeio
     import trans
+    
+    if args.ncores is not None:
+        import torch
+        torch.set_num_threads(args.ncores)
     
     logging.info('Loading tables.')
     df_covar = load_covariate(args.covariate_table, args.covariate_yaml)
