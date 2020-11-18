@@ -102,7 +102,7 @@ if __name__ == '__main__':
         map_args = {}
     else:
         map_args = read_yaml(args.map_trans_params)
-    logging.info('Arguments used for tensorqtl: ', dict_to_str(map_args))
+    logging.info('Arguments used for tensorqtl: ' + dict_to_str(map_args))
     
     logging.info('Start mapping.')
     pairs_df = trans.map_trans(
