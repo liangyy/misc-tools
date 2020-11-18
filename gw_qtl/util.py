@@ -3,6 +3,14 @@ import pandas as pd
 from pyutil import read_table, read_yaml
 
 
+def take_intersect(lists):
+    if len(lists) == 0:
+        return lists 
+    o = set(lists[0])
+    for l in lists:
+        o = o.intersection(set(l))
+    return list(o)
+
 def rearrange_rows(df, target_list):
     tmp = pd.DataFrame({'indiv': target_list})
     return pd.merge(tmp, df, on='indiv', how='left')
@@ -47,8 +55,8 @@ def load_covariate(file_list, fyaml):
             )
     return pd.concat(df_res, axis=1)
 
-def load_phenotype(file_list, fyaml):
+def load_phenotype(file_list):
     df = load_table(file_list)
-    df = df.reindex(columns=['indiv'] + list(df_yaml.keys()))
+    # df = df.reindex(columns=['indiv'] + list(df_yaml.keys()))
     df.drop_duplicates(subset='indiv', inplace=True)
     return df

@@ -8,7 +8,6 @@ if '.bed' not in config['genotype']:
     raise ValueError('Wrong genotype path. It should contain bed as extension.')
 geno_prefix = re.sub('.bed$', '', config['genotype'])
 
-
 if '{chr_num}' in config['genotype'] and 'chr_num' not in config:
     rule all:
         input:
@@ -21,11 +20,11 @@ else:
 rule tensorqtl:
     input:
         geno = config['genotype'],
-        pheno = config['phenotype'],
+        pheno = config['phenotype']['table'],
         covar = config['covariate']['table'],
         covar_meta = config['covariate']['metainfo']
     params:
-        geno_prefix
+        geno_prefix = geno_prefix
     output:
         outstr
     shell:
@@ -33,9 +32,10 @@ rule tensorqtl:
         export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
         python run_trans_qtl.py \
           --geno_bed_prefix {params.geno_prefix} \
-          --phenotype_table {input.pheno} \
-          --covariate_table {input.covar} \
+          --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
+          --covariate_table {input.covar} {config[covariate][indiv_col]} \
           --covariate_yaml {input.covar_meta} \
-          --output_prefix {output[0]} \
+          --output_prefix {output[0]}/ \
           --map_trans_params {config[map_trans_yaml]}
         '''
+

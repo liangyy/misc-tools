@@ -4,4 +4,7 @@
 __pycache__/
 output
 .snakemake
-
+*.pyc
+*.bgz.tbi
+*.bgz
+*.txt

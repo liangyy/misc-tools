@@ -47,11 +47,12 @@ if __name__ == '__main__':
         format = '%(asctime)s  %(message)s',
         datefmt = '%Y-%m-%d %I:%M:%S %p'
     )
+    import numpy as np
     from tqdm import tqdm
     from pyutil import load_list
-    from util import exclude_b_from_a
+    from util import exclude_b_from_a, load_covariate, load_phenotype, take_intersect, rearrange_rows, read_yaml
     import genotypeio
-    from tensorqtl import map_trans
+    import trans
     
     logging.info('Loading tables.')
     df_covar = load_covariate(args.covariate_table, args.covariate_yaml)
@@ -101,6 +102,6 @@ if __name__ == '__main__':
     for pheno in tqdm(pheno_list):
         sub = pairs_df[pairs_df.phenotype_id == pheno].reset_index(drop=True)
         if sub.shape[0] > 0:
-            sub.to_parquet('{}.{}.parquet'.format(args.output_prefix, pheno), index=False)
+            sub.to_parquet('{}{}.parquet'.format(args.output_prefix, pheno), index=False)
     logging.info('Done.')
     
