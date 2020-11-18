@@ -41,7 +41,7 @@ rule tensorqtl:
     shell:
         '''
         export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
-        python run_trans_qtl.py \
+        python {config[wrapper_script]} \
           --geno_bed_prefix {params.geno_prefix} \
           --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
           --covariate_table {input.covar} {config[covariate][indiv_col]} \

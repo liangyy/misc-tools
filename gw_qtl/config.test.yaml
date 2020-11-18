@@ -1,5 +1,6 @@
 tensorqtl_path: '/gpfs/data/im-lab/nas40t2/yanyul/softwares/tensorqtl/tensorqtl'
 misc_tools_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil'
+wrapper_script: 'run_trans_qtl.py'
 genotype: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/subset_genotypes/IDP_HM3_finalPheno.chr{chr_num}.bed'
 covariate: 
   table: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/phenotypes/imagexcan_covariate_round_1.parquet'
