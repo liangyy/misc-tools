@@ -32,6 +32,9 @@ snp_map: '/gpfs/data/im-lab/nas40t2/abarbeira/projects/gtex_v8/data_formatting/d
 simple_extra_command: 
   - '-meta_extra_col rsid:5'
 
+# if set the entry below, it will bypass the harmonization and use the file directly
+# harmonized_gwas: 'path-to-harmonized-gwas'
+
 # for S-PrediXcan
 spredixcan_extra_command: 
   - '--keep_non_rsid'

@@ -68,9 +68,14 @@ if 'spredixcan_effect_cols' in config:
 else:
     effect_cols = '--zscore_column zscore'
 
+if 'harmonized_gwas' in config:
+    gwas_input = config['harmonized_gwas']
+else:
+    gwas_input = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz'
+
 rule spredixcan:
     input:
-        gwas = '{outdir}/{name_tag}.harmonization_{harmonization_type}.txt.gz',
+        gwas = gwas_input,
         db = config['predict_db'],
         cov = config['predict_db_cov']
     output:
