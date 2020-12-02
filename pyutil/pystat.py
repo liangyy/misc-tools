@@ -35,3 +35,10 @@ def myrank(vec):
     ranks = np.empty_like(argsort)
     ranks[argsort] = np.arange(len(vec))
     return ranks + 1  # rank starts from 1
+    
+def z2p(zscore):
+    '''
+    Input 1d np.array zscore and return the corresponding two-sided p-value.
+    '''
+    scipy.stats.normal.sf(np.abs(zscore)) * 2
+    
