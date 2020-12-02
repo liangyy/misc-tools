@@ -56,7 +56,8 @@ class UKBReader:
         dosage = pandas2ri.ri2py(cached_data[4])
         df_var = pandas2ri.ri2py(cached_data[0])
         # dosage: nvariant (we have 1 here) x nsample x num_of_allele_combination
-        dosage = dosage[0, :, 1] + 2 * dosage[0, :, 2]
+        with np.errstate(invalid='ignore'):
+            dosage = dosage[0, :, 1] + 2 * dosage[0, :, 2]
         missing = np.isnan(dosage)
         dosage[missing] = np.nanmean(dosage)
         return dosage, df_var.allele0[0], df_var.allele1[0]
@@ -78,10 +79,11 @@ class UKBReader:
             df_var = ro.conversion.rpy2py(cached_data[0])
             dosage = ro.conversion.rpy2py(cached_data[4])
         # dosage: nvariant (we have several here) x nsample x num_of_allele_combination
-        dosage = dosage[:, :, 1] + 2 * dosage[:, :, 2]
+        with np.errstate(invalid='ignore'):
+            dosage = dosage[:, :, 1] + 2 * dosage[:, :, 2]
         missing_ind = np.isnan(dosage)
         if missing_ind.sum() > 0:
-            missing = np.where(missing_ind)[0]
+            missing = np.where(missing_ind)
             dosage[missing[0], missing[1]] = np.nanmean(dosage, axis=1)[missing[0]]
         # need to handle potential duplicated snpid (due to multialleleic)
         _, dup_idx = np.unique(df_var.rsid.tolist(), return_index=True)
