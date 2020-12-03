@@ -40,5 +40,5 @@ def z2p(zscore):
     '''
     Input 1d np.array zscore and return the corresponding two-sided p-value.
     '''
-    scipy.stats.normal.sf(np.abs(zscore)) * 2
+    return scipy.stats.norm.sf(np.abs(zscore)) * 2
     
