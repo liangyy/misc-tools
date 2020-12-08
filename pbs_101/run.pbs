@@ -1,0 +1,14 @@
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=5
+#PBS -l mem=64gb
+#PBS -e ${PBS_JOBNAME}.${PBS_JOBID}.err
+#PBS -o ${PBS_JOBNAME}.${PBS_JOBID}.out
+
+# PARAMETER1
+# PARAMETER2
+# PARAMETER3
+
+# run your script below 
+# for instance
+Rscript my_r_script.R --param1 $PARAMETER1 --param2 $PARAMETER2 --param3 $PARAMETER3 --chr_num $CHR_NUM
