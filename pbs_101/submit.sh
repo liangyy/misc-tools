@@ -8,8 +8,10 @@ param2=12
 param3=0.1
 
 for chr in `seq 1 22`
+do
   for param1 in $param1s
-    do
-      qsub -v PARAMETER1=$param1,PARAMETER2=$param2,PARAMETER3=$param3,CHR_NUM=$chr run.pbs
-    done
+  do
+    qsub -v PARAMETER1=$param1,PARAMETER2=$param2,PARAMETER3=$param3,CHR_NUM=$chr run.pbs
+  done
 done
+
