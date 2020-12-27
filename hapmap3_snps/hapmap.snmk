@@ -21,8 +21,10 @@ rule all:
     input:
         '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config)
 
+target_build = ''
 if 'gen_lookup_table' in config:
     chain_args = ''
+    target_build = config['gen_lookup_table']['target_build']
     if config['gen_lookup_table']['chain_file'] is not None:
         chain_args = '--liftover_chain {}'.format(config['gen_lookup_table']['chain_file'])
     rule all_lookup:
@@ -103,14 +105,17 @@ rule filter_by_ambiguity:
 
 rule gen_lookup_table:
     input:
-        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt',
-        config['genotypes']['map']
+        snplist = '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt',
+        geno_bim = '{outdir}/{name_tag}_genotype.bim',
+        geno_frq = '{outdir}/{name_tag}_pop_{pop_tag}.frq'
     output:
         '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'
     shell:
         'export PYTHONPATH={config[misc_tools_path]}/liftover_snp:{config[misc_tools_path]}/pyutil:$PYTHONPATH; \
         python gen_lookup_table.py \
-            --input {input[0]} \
-            --input_map {input[1]} \
+            --input {input.snplist} \
+            --input_bim {input.geno_bim} \
+            --input_frq {input.geno_frq} \
+            --target_build {target_build} \
             {chain_args} \
             --output {output[0]}'

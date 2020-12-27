@@ -14,4 +14,4 @@ misc_tools_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/'
 
 gen_lookup_table:
   chain_file: null
-  
+  target_build: 'bX'
