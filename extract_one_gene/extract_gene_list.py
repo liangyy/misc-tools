@@ -33,8 +33,12 @@ with h5py.File(args.input, 'r') as f:
     gene_idxs = np.concatenate(gene_idxs, axis=0)
     gene_list = gene_list_new
 
+df_tmp = pd.DataFrame({'idx': gene_idxs, 'gene': gene_list})
+df_tmp.sort_values(by='idx', inplace=True)
+gene_list = list(df_tmp.gene)
+gene_idxs = list(df_tmp.idx)
 
-if gene_idxs.shape[0] == 0:
+if len(gene_idxs) == 0:
     print('No target gene in the input.')
 else:
     with h5py.File(args.input, 'r') as f:

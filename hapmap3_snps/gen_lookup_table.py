@@ -30,6 +30,7 @@ if __name__ == '__main__':
     )
     
     import pandas as pd
+    import numpy as np
     import lib as lo_lib
     from pyutil import load_list
     
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     snp_list = load_list(args.input)
     
     logging.info('Loading SNP MAP file.')
-    df_map = pd.read_csv(args.input_map, sep='\s+', header=None)
+    df_bim = pd.read_csv(args.input_map, sep='\s+', header=None)
     df_bim.columns = ['chr', 'rsid', 'placeholder', 'pos']
     
     logging.info('Intersecting list and MAP.')
@@ -49,13 +50,13 @@ if __name__ == '__main__':
     
     if args.liftover_chain is not None:
         logging.info('Doing liftover, chain file = {}'.format(args.liftover_chain))
-        df_lifted = lo_lib.liftover(list(df_bim.chr), list(df_bim.pos), args.liftover_chain)
+        df_lifted = lo_lib.liftover(df_bim.chr, df_bim.pos, args.liftover_chain)
         df_bim.pos = df_lifted.liftover_pos
         df_bim.chr = df_lifted.liftover_chr
         df_bim = df_bim[ ~ df_bim.pos.isna() ].reset_index(drop=True)
         logging.info('There are {} SNPs left after liftover.'.format(df_bim.shape[0]))
     
-    df_bim.start = df_bim.pos
+    df_bim['start'] = df_bim.pos
     df_bim.rename(columns={'pos': 'end', 'rsid': 'name'}, inplace=True)
     df_bim = df_bim[['chr', 'start', 'end', 'name']]
     
