@@ -1,0 +1,73 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+
+def gen_output_map(config):
+    cols = [
+        'variant_id', 
+        'chromosome', 
+        'position', 
+        'non_effect_allele', 
+        'effect_allele',
+        'effect_size',
+        'effect_se',  # standard_error
+        'frequency',
+        'zscore',
+        'pvalue',
+        'OR',  # Odds_ratio
+        'sample_size',
+        'sample_size_half',
+        'ncase',
+        'ncontrol',
+        'chr_pos'
+    ]
+    rename_dict = {
+        'OR': 'Odds_ratio', 'effect_se': 'standard_error', 
+        'ncontrol': 'n_controls', 'ncase': 'n_cases'
+    } 
+    out = []
+    for col in cols:
+        if col in config:
+            if col in rename_dict:
+                colname = rename_dict[col]
+            else:
+                colname = col
+            out.append('-output_column {} {}'.format(config[col], colname))
+            if col == 'sample_size_half':
+                out.append('-output_column sample_size_half n_cases ')
+                out.append('-output_column sample_size_half n_controls')
+    return ' '.join(out)
+
+def gen_split(config):
+    if 'chr_pos' not in config:
+        return ''
+    else:
+        return "-split_column {} '{}' chromosome position".format(config['chr_pos']['col'], config['chr_pos']['sep'])
+
+map_arg = gen_output_map(config)
+split_arg = gen_split(config)
+chain_arg = ''
+if 'chain_file' in config:
+    chain_arg = '-liftover ' + config['chain_file']
+snpref_arg = ''
+if 'snp_reference' in config:
+    snpref_arg = '-snp_reference_metadata ' + config['snp_reference'] + ' METADATA'
+
+rule all:
+    input:
+        '{otudir}/harmonized_gwas.{nametag}.tsv.gz'.format(**config)
+
+rule run:
+    input:
+        gwas = config['file_path']
+    output:
+        '{otudir}/harmonized_gwas.{nametag}.tsv.gz'
+    log:    
+        '{otudir}/harmonized_gwas.{nametag}.log'
+    shell:
+        'python {config[gwas_tool_path]}/src/gwas_parsing.py \
+          -gwas_file {input.gwas} \
+          {map_arg} \
+          {split_arg} \
+          {chain_arg} \
+          {snpref_arg} > {log} 2>&1'
+    

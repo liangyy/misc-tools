@@ -1,0 +1,23 @@
+genome_build: 'hg19'
+
+chr_pos: 
+  col: 'SNP'
+  sep: ':'
+  
+effect_allele: 'A1'
+non_effect_allele: 'A2'
+frequency: 'freq'
+effect_size: 'b'
+effect_se: 'se'
+zscore: 'Z'
+pvalue: 'p'
+ncase: 'N_cases'
+ncontrol: 'N_controls'
+
+# sample_size: 'Neff'
+nametag: 'test'
+snp_reference: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/hapmap3_eur_snplist/hapmap3_eur_pop_CEU_maf_0.01_with_qc.lookup_table.tsv.gz'
+file_path: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/psychiatric_gwas/nallsEtAl2019_excluding23andMe_allVariants.tab.zip'
+
+
+gwas_tool_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/summary-gwas-imputation'
