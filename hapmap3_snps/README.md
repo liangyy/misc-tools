@@ -20,3 +20,4 @@ snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.
 The resulting files of the test run are here: [maf = 0.01](https://uchicago.box.com/s/4r2ddcyaizmutm0nmfrfg5vr7xz7hsb5) and [maf = 0.05](https://uchicago.box.com/s/7dpcj59y2u7titrevwu76rzudpq2gxfu). 
 
 
+To generate metadata table for lookup, see `gen_lookup_table.py`.

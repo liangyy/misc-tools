@@ -1,6 +1,7 @@
 if 'outdir' not in config:
     config['outdir'] = 'output'
 
+
 def get_genotypes(config):
     if 'genotypes' not in config:
         raise ValueError('Config needs genotypes entry.')
@@ -19,6 +20,14 @@ genotype_command, genotype_files = get_genotypes(config)
 rule all:
     input:
         '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config)
+
+if 'gen_lookup_table' in config:
+    chain_args = ''
+    if config['gen_lookup_table']['chain_file'] is not None:
+        chain_args = '--liftover_chain {}'.format(config['gen_lookup_table']['chain_file'])
+    rule all_lookup:
+        input:
+            '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'.format(**config)
 
 rule extract_individuals:
     input:
@@ -92,3 +101,16 @@ rule filter_by_ambiguity:
             --input_bim {input[0]} \
             --output {output[0]}'
 
+rule gen_lookup_table:
+    input:
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt',
+        config['genotypes']['map']
+    output:
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'
+    shell:
+        'export PYTHONPATH={config[misc_tools_path]}/liftover_snp:{config[misc_tools_path]}/pyutil:$PYTHONPATH; \
+        python gen_lookup_table.py \
+            --input {input[0]} \
+            --input_map {input[1]} \
+            {chain_args} \
+            --output {output[0]}'
