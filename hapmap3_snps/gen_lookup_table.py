@@ -43,6 +43,7 @@ if __name__ == '__main__':
     )
     
     import pandas as pd
+    import numpy as np
     import lib as lo_lib
     from pyutil import load_list
     
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     snp_list = load_list(args.input)
     
     logging.info('Loading SNP BIM file.')
-    df_map = pd.read_csv(args.input_bim, sep='\s+', header=None)
+    df_bim = pd.read_csv(args.input_bim, sep='\s+', header=None)
     df_bim.columns = ['chr', 'rsid', 'placeholder', 'pos', 'a1', 'a2']
     
     logging.info('Loading SNP FRQ file.')
@@ -66,7 +67,7 @@ if __name__ == '__main__':
     
     if args.liftover_chain is not None:
         logging.info('Doing liftover, chain file = {}'.format(args.liftover_chain))
-        df_lifted = lo_lib.liftover(list(df_bim.chr), list(df_bim.pos), args.liftover_chain)
+        df_lifted = lo_lib.liftover(df_bim.chr, df_bim.pos, args.liftover_chain)
         df_bim.pos = df_lifted.liftover_pos
         df_bim.chr = df_lifted.liftover_chr
         df_bim = df_bim[ ~ df_bim.pos.isna() ].reset_index(drop=True)
