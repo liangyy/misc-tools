@@ -29,9 +29,14 @@ def gen_output_map(config):
         if col in config:
             if col in rename_dict:
                 colname = rename_dict[col]
+                target = config[col]
+            elif col == 'chr_pos':
+                colname = 'chr_pos'
+                target = config['chr_pos']['col']
             else:
+                target = config[col]
                 colname = col
-            out.append('-output_column {} {}'.format(config[col], colname))
+            out.append('-output_column {} {}'.format(target, colname))
             if col == 'sample_size_half':
                 out.append('-output_column sample_size_half n_cases ')
                 out.append('-output_column sample_size_half n_controls')
@@ -41,7 +46,7 @@ def gen_split(config):
     if 'chr_pos' not in config:
         return ''
     else:
-        return "-split_column {} '{}' chromosome position".format(config['chr_pos']['col'], config['chr_pos']['sep'])
+        return "-split_column {} '{}' chromosome position".format('chr_pos', config['chr_pos']['sep'])
 
 map_arg = gen_output_map(config)
 split_arg = gen_split(config)
@@ -54,7 +59,7 @@ if 'snp_reference' in config:
 
 rule all:
     input:
-        '{otudir}/harmonized_gwas.{nametag}.tsv.gz'.format(**config)
+        '{outdir}/harmonized_gwas.{nametag}.tsv.gz'.format(**config)
 
 rule run:
     input:
@@ -69,5 +74,6 @@ rule run:
           {map_arg} \
           {split_arg} \
           {chain_arg} \
-          {snpref_arg} > {log} 2>&1'
+          {snpref_arg} \
+          -output {output[0]} > {log} 2>&1'
     
