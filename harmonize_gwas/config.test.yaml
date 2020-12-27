@@ -19,7 +19,7 @@ nametag: 'test'
 snp_reference: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/hapmap3_eur_snplist/hapmap3_eur_pop_CEU_maf_0.01_with_qc.lookup_table.tsv.gz'
 file_path: '/gpfs/data/im-lab/nas40t2/yanyul/ukb_idp/psychiatric_gwas/nallsEtAl2019_excluding23andMe_allVariants.tab.zip'
 
-full_extra_command:
+extra_command:
   - '-meta_extra_col rsid:6''-meta_extra_col rsid:6'
 
 gwas_tool_path: '/gpfs/data/im-lab/nas40t2/yanyul/GitHub/summary-gwas-imputation'

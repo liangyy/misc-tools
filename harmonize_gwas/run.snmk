@@ -48,8 +48,15 @@ def gen_split(config):
     else:
         return "-split_column {} '{}' chromosome position".format('chr_pos', config['chr_pos']['sep'])
 
+def gen_other_arg(config):
+    if 'extra_command' not in config:
+        return ''
+    else:
+        return ' '.join(config['extra_command'])
+
 map_arg = gen_output_map(config)
 split_arg = gen_split(config)
+other_arg = gen_other_arg(config)
 chain_arg = ''
 if 'chain_file' in config:
     chain_arg = '-liftover ' + config['chain_file']
