@@ -13,7 +13,7 @@ def gen_output_map(config):
         'frequency',
         'zscore',
         'pvalue',
-        'OR',  # Odds_ratio
+        'OR',  # or
         'sample_size',
         'sample_size_half',
         'ncase',
@@ -21,7 +21,7 @@ def gen_output_map(config):
         'chr_pos'
     ]
     rename_dict = {
-        'OR': 'Odds_ratio', 'effect_se': 'standard_error', 
+        'OR': 'or', 'effect_se': 'standard_error', 
         'ncontrol': 'n_controls', 'ncase': 'n_cases'
     } 
     out = []
@@ -38,8 +38,8 @@ def gen_output_map(config):
                 colname = col
             out.append('-output_column {} {}'.format(target, colname))
             if col == 'sample_size_half':
-                out.append('-output_column sample_size_half n_cases ')
-                out.append('-output_column sample_size_half n_controls')
+                out.append('-output_column {} n_cases'.format(config['sample_size_half']))
+                out.append('-output_column {} n_controls'.format(config['sample_size_half']))
     return ' '.join(out)
 
 def gen_split(config):
@@ -82,5 +82,6 @@ rule run:
           {split_arg} \
           {chain_arg} \
           {snpref_arg} \
+          {other_arg} \
           -output {output[0]} > {log} 2>&1'
     
