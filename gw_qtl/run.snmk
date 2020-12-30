@@ -59,8 +59,7 @@ else:
     rule tensorqtl:
         input:
             geno = config['genotype'],
-            pheno = config['phenotype']['table'],
-            covar_meta = config['covariate']['metainfo']
+            pheno = config['phenotype']['table']
         params:
             geno_prefix = geno_prefix
         output:
