@@ -24,31 +24,62 @@ else:
         input:
             outstr.format(**config)
 
-rule tensorqtl:
-    input:
-        geno = config['genotype'],
-        pheno = config['phenotype']['table'],
-        covar = config['covariate']['table'],
-        covar_meta = config['covariate']['metainfo']
-    params:
-        geno_prefix = geno_prefix
-    output:
-        outstr
-    log: 
-        re.sub('/$', '.log', outstr)
-    threads:
-        config['ncores']
-    shell:
-        '''
-        export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
-        python {config[wrapper_script]} \
-          --geno_bed_prefix {params.geno_prefix} \
-          --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
-          --covariate_table {input.covar} {config[covariate][indiv_col]} \
-          --covariate_yaml {input.covar_meta} \
-          --output_prefix {output[0]} \
-          --map_trans_params {config[map_trans_yaml]} \
-          {ncores_opt} \
-          > {log}
-        '''
+if 'covariate' in config:
+
+    rule tensorqtl:
+        input:
+            geno = config['genotype'],
+            pheno = config['phenotype']['table'],
+            covar = config['covariate']['table'],
+            covar_meta = config['covariate']['metainfo']
+        params:
+            geno_prefix = geno_prefix
+        output:
+            outstr
+        log: 
+            re.sub('/$', '.log', outstr)
+        threads:
+            config['ncores']
+        shell:
+            '''
+            export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
+            python {config[wrapper_script]} \
+              --geno_bed_prefix {params.geno_prefix} \
+              --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
+              --covariate_table {input.covar} {config[covariate][indiv_col]} \
+              --covariate_yaml {input.covar_meta} \
+              --output_prefix {output[0]} \
+              --map_trans_params {config[map_trans_yaml]} \
+              {ncores_opt} \
+              > {log}
+            '''
+
+else:
+    
+    rule tensorqtl:
+        input:
+            geno = config['genotype'],
+            pheno = config['phenotype']['table'],
+            covar_meta = config['covariate']['metainfo']
+        params:
+            geno_prefix = geno_prefix
+        output:
+            outstr
+        log: 
+            re.sub('/$', '.log', outstr)
+        threads:
+            config['ncores']
+        shell:
+            '''
+            export PYTHONPATH={config[tensorqtl_path]}:{config[misc_tools_path]}; 
+            python {config[wrapper_script]} \
+              --geno_bed_prefix {params.geno_prefix} \
+              --phenotype_table {input.pheno} {config[phenotype][indiv_col]} \
+              --output_prefix {output[0]} \
+              --map_trans_params {config[map_trans_yaml]} \
+              {ncores_opt} \
+              > {log}
+            '''
+
+    
 
