@@ -20,7 +20,9 @@ rule all_gwas:
     input:
         config['formated_gwas'].format(**config)
 
-
+tmp = config['gwas_parquet'].split('{chr_num}')
+gwas_pattern = tmp[0] + 'CHRNUM' + tmp[1]
+print(gwas_pattern)
 rule format_gwas:
     '''
     Example GWAS format:
@@ -29,10 +31,10 @@ rule format_gwas:
     rs9605903 C T 0.264550264550265 0.1024 0.0856903765690377 0.2327 378
     '''
     input:
-        gwas_parquet = [ re.sub('{chr_num}', i, config['gwas_parquet']) for i in range(1, 23) ],
-        geno_bim = config['genotype']['bim']
+        gwas_parquet = [ re.sub('{chr_num}', str(i), config['gwas_parquet']) for i in range(1, 23) ],
+        geno_bim = [ re.sub('{chr_num}', str(i), config['genotype']['bim']) for i in range(1, 23) ]
     params:
-        gwas_pattern = re.sub('{chr_num}', '{{chr_num}}', config['gwas_parquet'])
+        gwas_pattern = gwas_pattern  # '{{chr_num}}' # re.sub('{chr_num}', '{{chr_num}}', config['gwas_parquet'])
     output:
         gwas_sumstat = config['formated_gwas']
     shell:
@@ -68,7 +70,7 @@ if '{chr_num}' in config['ldm_prefix']:
     '''
     rule gen_mldm_list:
         input:
-            ldms = [ config['ldm_prefix'] + '.ldm.' + config['ldm_mode'] + '.bin' for chr_num in range(1, 23) ]
+            ldms = [ re.sub('{chr_num}', str(i), config['ldm_prefix']) + '.ldm.' + config['ldm_mode'] + '.bin' for i in range(1, 23) ]
         output:
             '{outdir}/{geno_tag}_mldm.list'
         run:

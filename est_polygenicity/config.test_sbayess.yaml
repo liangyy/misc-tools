@@ -10,7 +10,7 @@ sample_size: 24409
 gwas_parquet: '/scratch/t.cri.yliang/ukb_idp/idp_gwas_2nd/trans_qtl.dmri.original.all_covar.w_pc.chr{chr_num}/{gwas_tag}.parquet'
 formated_gwas: '{outdir}/{gwas_tag}.formated_gwas.ma'
 
-ldm_prefix: '{outdir}/{geno_tag}'
+ldm_prefix: '{outdir}/{geno_tag}.chr{chr_num}'
 ldm_mode: 'band'
 ldm_wind: 2
 ldm_option:
