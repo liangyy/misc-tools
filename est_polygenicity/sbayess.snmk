@@ -23,7 +23,7 @@ rule all_gwas:
 if 'chr_num' in config:
     rule all_ldm_chr:
         input:
-            config['ldm_prefix'].format(chr_num=i, **config) + '.ldm.' + config['ldm_mode'] + '.bin' 
+            config['ldm_prefix'].format(**config) + '.ldm.' + config['ldm_mode'] + '.bin' 
     
 
 def load_files_w_wildcard(str_):
