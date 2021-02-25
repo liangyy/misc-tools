@@ -6,7 +6,7 @@ import re
 geno_prefix = config['genotype']['bed']
 geno_prefix = re.sub('.bed', '', geno_prefix)
 add_ldm_opt = ''
-if config['ldm_option'] == 'band' and 'ldm_wind' in config:
+if config['ldm_mode'] == 'band' and 'ldm_wind' in config:
     add_ldm_opt = '--wind {}'.format(config['ldm_wind'])
 other_opts = ''
 if 'ldm_option' in config:
@@ -65,13 +65,14 @@ rule gen_ldm:
         config['ldm_prefix'] + '.ldm.' + config['ldm_mode'] + '.info'
     params:
         ldm_option = '--make-{ldm_mode}-ldm'.format(ldm_mode=config['ldm_mode']),
-        out_prefix = config['ldm_prefix']
+        out_prefix = config['ldm_prefix'],
+        geno_prefix = geno_prefix
     shell:
         '{config[gctb_exec]} \
-           --bfile {geno_prefix} \
+           --bfile {params.geno_prefix} \
            {params.ldm_option} \
            {add_ldm_opt} \
-           --out {out.prefix}'
+           --out {params.out_prefix}'
 
 if '{chr_num}' in config['ldm_prefix']:
     '''

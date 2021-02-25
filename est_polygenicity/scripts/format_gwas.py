@@ -1,4 +1,10 @@
 import pandas as pd
+import re
+
+CHR_WILDCARD = 'CHRNUM'
+
+def replace_str(pat, to_, from_=CHR_WILDCARD):
+    return re.sub(from_, str(to_), pat)
 
 def read_bim(fn):
     tmp = pd.read_csv(fn, sep='\s+', header=None)
@@ -16,19 +22,21 @@ def _load_gwas(gwas_file, bim_file):
     )
     return dd
 
-def load_gwas(gwas_pattern, bim_pattern, sample_size):
-    if '{chr_num}' in gwas_pattern:
-        if '{chr_num}' not in bim_pattern:
-            raise ValueError('Need gwas_pattern and bim_pattern both have or not have {chr_num}.')
+def load_gwas(gwas_pattern, bim_pattern, logging):
+    if CHR_WILDCARD in gwas_pattern:
+        if '' not in bim_pattern:
+            raise ValueError('Need gwas_pattern and bim_pattern both have or not have {}.'.format(CHR_WILDCARD))
         out = []
         for i in range(1, 23):
+            logging.info('load_gwas: chr = {}'.format(i))
             dd = _load_gwas(
-                gwas_pattern.format(chr_num=i),
-                bim_pattern.format(chr_num=i)
+                replace_str(gwas_pattern, i),
+                replace_str(bim_pattern, i)
             )
             out.append(dd)
         out = pd.concat(out, axis=0).reset_index(drop=True)
     else:
+        logging.info('load_gwas: one file')
         out =  _load_gwas(gwas_pattern, bim_pattern)  
     return out
             
@@ -67,7 +75,7 @@ if __name__ == '__main__':
     )
 
     logging.info('Loading GWAS.')
-    df_gwas = load_gwas(args.parquet, args.bim)
+    df_gwas = load_gwas(args.parquet, args.geno_bim, logging)
     df_gwas['n'] = args.gwas_sample_size
     
     logging.info('Writing to disk.')

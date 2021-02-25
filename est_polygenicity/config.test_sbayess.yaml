@@ -12,7 +12,7 @@ formated_gwas: '{outdir}/{gwas_tag}.formated_gwas.ma'
 
 ldm_prefix: '{outdir}/{geno_tag}.chr{chr_num}'
 ldm_mode: 'band'
-ldm_wind: 2
+ldm_wind: 0.1
 ldm_option:
   - '--exclude-mhc'
   - '--num-chains 2'
