@@ -1,0 +1,7 @@
+gwas_tag: 'IDP-25109'
+gwas_parquet: '/project2/haky/Data/BrainXcan/idp_gwas_2nd/trans_qtl.dmri.original.all_covar.w_pc.chr{chr_num}/{gwas_tag}.parquet'
+
+SLD4M: 
+  path_to_scripts: '/project2/haky/yanyul/github_external/SLD4M'
+  l2l4: '/project2/haky/yanyul/data/SLD4M/baselineLD.1kg.l2l4.mat'
+path_to_run_script: '/project2/haky/yanyul/GitHub/misc-tools/est_polygenicity/scripts'
