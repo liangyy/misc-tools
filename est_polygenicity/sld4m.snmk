@@ -1,6 +1,14 @@
 if 'outdir' not in config:
     config['outdir'] = 'output'
-
+    
+def load_files_w_wildcard(str_):
+    fn = str_
+    pat = str_
+    if '{chr_num}' in str_:
+        fn = [ re.sub('{chr_num}', str(i), str_) for i in range(1, 23) ]
+        tmp = str_.split('{chr_num}')
+        pat = tmp[0] + 'CHRNUM' + tmp[1]
+    return fn, pat
 gwas_parquet, gwas_pattern = load_files_w_wildcard(config['gwas_parquet'])
 
 rule format_gwas:
