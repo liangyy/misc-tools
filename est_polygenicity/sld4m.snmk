@@ -11,6 +11,10 @@ def load_files_w_wildcard(str_):
     return fn, pat
 gwas_parquet, gwas_pattern = load_files_w_wildcard(config['gwas_parquet'])
 
+rule all:
+    input:
+        '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(**config)
+
 rule format_gwas:
     input:
         gwas_parquet = gwas_parquet
