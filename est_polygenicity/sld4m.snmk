@@ -18,10 +18,12 @@ rule all:
 rule format_gwas:
     input:
         gwas_parquet = gwas_parquet
+    params:
+        gwas_pattern = gwas_pattern
     output:
         '{outdir}/{gwas_tag}.formated_gwas.mat'
     shell:
-        'python scripts/format_gwas.py \
+        'python scripts/format_gwas_to_mat.py \
            --parquet {params.gwas_pattern} \
            --output {output[0]}'
            
