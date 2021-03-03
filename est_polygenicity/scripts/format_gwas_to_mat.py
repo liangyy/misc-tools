@@ -37,7 +37,8 @@ def _load_gwas(gwas_file, extra=None):
     else:
         dd = pd.read_csv(gwas_file, compression='gzip', sep='\s+')
         dd.rename(columns=_to_dict(extra), inplace=True)
-    dd['chisq'] = (dd.b / dd.b_se) ** 2
+    if 'chisq' not in dd.columns:
+        dd['chisq'] = (dd.b / dd.b_se) ** 2
     dd['rs_int'] = _rs2int(list(dd.variant_id))
     return dd[['rs_int', 'chisq']]
 
