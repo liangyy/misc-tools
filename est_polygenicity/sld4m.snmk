@@ -21,17 +21,17 @@ rule format_gwas:
     params:
         gwas_pattern = gwas_pattern
     output:
-        '{outdir}/{gwas_tag}.formated_gwas.mat'
+        config['gwas_formatted']  # '{outdir}/{gwas_tag}.formated_gwas.mat'
     shell:
         'python scripts/format_gwas_to_mat.py \
            --gwas_file {params.gwas_pattern} \
            --output {output[0]} \
-           --mode {config[gwas_mode]}'
+           {config[gwas_mode]}'
            
 rule sld4m:
     input:
         l2l4 = config['SLD4M']['l2l4'],
-        gwas = '{outdir}/{gwas_tag}.formated_gwas.mat'
+        gwas = config['gwas_formatted']  # '{outdir}/{gwas_tag}.formated_gwas.mat'
     output:
         '{outdir}/{gwas_tag}.sld4m_{mode}.csv'
     shell:

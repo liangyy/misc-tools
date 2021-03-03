@@ -30,7 +30,6 @@ def _load_gwas(gwas_file, extra=None):
     else:
         dd = pd.read_csv(gwas_file, compression='gzip', sep='\s+')
         dd.rename(columns=_to_dict(extra), inplace=True)
-    dd = dd[['variant_id', 'pval']]
     dd['chisq'] = (dd.b / dd.b_se) ** 2
     dd['rs_int'] = _rs2int(list(dd.variant_id))
     return dd[['rs_int', 'chisq']]
@@ -40,12 +39,12 @@ def load_gwas(gwas_pattern, logging, extra=None):
         out = []
         for i in range(1, 23):
             logging.info('load_gwas: chr = {}'.format(i))
-            dd = _load_gwas(replace_str(gwas_pattern, i), extra=None)
+            dd = _load_gwas(replace_str(gwas_pattern, i), extra=extra)
             out.append(dd)
         out = pd.concat(out, axis=0).reset_index(drop=True)
     else:
         logging.info('load_gwas: one file')
-        out =  _load_gwas(gwas_pattern, extra=None)  
+        out =  _load_gwas(gwas_pattern, extra=extra)  
     return out
             
 if __name__ == '__main__':
