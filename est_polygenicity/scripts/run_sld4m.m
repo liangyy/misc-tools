@@ -21,7 +21,10 @@ if strcmp(mode_, 'simple')
   report_annot_mat = [ 1 1 ];
 elseif strcmp(mode_, 'all')
   % looks good
-  report_annot_mat = [ ones(size(ell4, 2), 1), eye(size(ell4, 2)) ];
+  tmp = zeros(size(ell4, 2), 1);
+  tmp(60:69) = 1;
+  disp(['Aggregate:', header(60:69)])
+  report_annot_mat = [ tmp, eye(size(ell4, 2)) ];
 else
   fprintf('Wrong mode = %s', mode_); 
 end
@@ -29,7 +32,7 @@ fprintf('Mode = %s', mode_);
 
 [Ma_est, Ma_err] = SLD4M( chisq(idx_sumstat), ell2, ell4, idx_ref, annot, EW2(idx_ref), EW4(idx_ref), no_blocks, 1, report_annot_mat);
 
-out_table = table([ "All", Annot_names' ]', Ma_est, Ma_err);
+out_table = table([ "Manual_aggregated", Annot_names' ]', Ma_est, Ma_err);
 writetable(out_table, out_file, 'Delimiter', ',');
 
 exit
