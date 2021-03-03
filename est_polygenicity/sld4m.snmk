@@ -9,11 +9,25 @@ def load_files_w_wildcard(str_):
         tmp = str_.split('{chr_num}')
         pat = tmp[0] + 'CHRNUM' + tmp[1]
     return fn, pat
+    
+def read_list(fn):
+    o = []
+    with open(fn, 'r') as f:
+        for i in f:
+            o.append(i.strip())
+    return o
+
 gwas_parquet, gwas_pattern = load_files_w_wildcard(config['gwas_parquet'])
 
-rule all:
-    input:
-        '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(**config)
+if 'gwas_list' in config:
+    gwas_list = read_list(config['gwas_list'])
+    rule all:
+        input:
+            [ '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(gwas_tag=i, **config) for i in gwas_list ]
+else:
+    rule all:
+        input:
+            '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(**config)
 
 rule format_gwas:
     input:
