@@ -17,24 +17,35 @@ def _rs2int(ll):
             continue
     return oo
 
-def _load_gwas(gwas_file):
-    dd = pd.read_parquet(gwas_file)
+def _to_dict(ll):
+    odict = {}
+    for l in ll:
+        v, k = l.split(':')
+        odict[k] = v
+    return odict
+
+def _load_gwas(gwas_file, extra=None):
+    if extra is None:
+        dd = pd.read_parquet(gwas_file)
+    else:
+        dd = pd.read_csv(gwas_file, compression='gzip', sep='\s+')
+        dd.rename(columns=_to_dict(extra), inplace=True)
     dd = dd[['variant_id', 'pval']]
-    dd['chisq'] = scipy.stats.chi2.isf(dd.pval, df=1)
+    dd['chisq'] = (dd.b / dd.b_se) ** 2
     dd['rs_int'] = _rs2int(list(dd.variant_id))
     return dd[['rs_int', 'chisq']]
 
-def load_gwas(gwas_pattern, logging):
+def load_gwas(gwas_pattern, logging, extra=None):
     if CHR_WILDCARD in gwas_pattern:
         out = []
         for i in range(1, 23):
             logging.info('load_gwas: chr = {}'.format(i))
-            dd = _load_gwas(replace_str(gwas_pattern, i))
+            dd = _load_gwas(replace_str(gwas_pattern, i), extra=None)
             out.append(dd)
         out = pd.concat(out, axis=0).reset_index(drop=True)
     else:
         logging.info('load_gwas: one file')
-        out =  _load_gwas(gwas_pattern)  
+        out =  _load_gwas(gwas_pattern, extra=None)  
     return out
             
 if __name__ == '__main__':
@@ -44,7 +55,7 @@ if __name__ == '__main__':
         Take GWAS parquet file generated from tensorqtl run 
         (using a customized script).
     ''')
-    parser.add_argument('--parquet', help='''
+    parser.add_argument('--gwas_file', help='''
         GWAS parquet file.
         If wildcard CHRNUM is there, we read from chr_num = 1 to 22.
         In the GWAS file, there should be columns:
@@ -52,6 +63,10 @@ if __name__ == '__main__':
     ''')
     parser.add_argument('--output', help='''
         Output MATLAB mat file for SLD4M.
+    ''')
+    parser.add_argument('--as_text_gz', default=None, nargs='+', help='''
+        If GWAS file is text gz. Set it and specify columns:
+        variant_id:SNP b:Beta b_se:se
     ''')
     args = parser.parse_args()
  
@@ -65,7 +80,7 @@ if __name__ == '__main__':
     )
 
     logging.info('Loading GWAS.')
-    df_gwas = load_gwas(args.parquet, logging)
+    df_gwas = load_gwas(args.gwas_file, logging, extra=args.as_text_gz)
     n0 = df_gwas.shape[0]
     df_gwas = df_gwas[ df_gwas.rs_int > 0 ].reset_index(drop=True)
     logging.info('Loaded {} SNPs in total and {} have valid rsID.'.format(n0, df_gwas.shape[0]))

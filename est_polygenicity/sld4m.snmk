@@ -24,8 +24,9 @@ rule format_gwas:
         '{outdir}/{gwas_tag}.formated_gwas.mat'
     shell:
         'python scripts/format_gwas_to_mat.py \
-           --parquet {params.gwas_pattern} \
-           --output {output[0]}'
+           --gwas_file {params.gwas_pattern} \
+           --output {output[0]} \
+           --mode {config[gwas_mode]}'
            
 rule sld4m:
     input:
