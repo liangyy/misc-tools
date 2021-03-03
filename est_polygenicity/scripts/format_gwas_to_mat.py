@@ -19,9 +19,16 @@ def _rs2int(ll):
 
 def _to_dict(ll):
     odict = {}
+    has_chisq = False
     for l in ll:
         v, k = l.split(':')
-        odict[k] = v
+        if v == 'chisq':
+            has_chisq = True
+        odict[k] = v 
+    if has_chisq is True:
+        for k, v in odict:
+            if v in ['b', 'b_se']:
+                del odict[k]
     return odict
 
 def _load_gwas(gwas_file, extra=None):
@@ -65,7 +72,8 @@ if __name__ == '__main__':
     ''')
     parser.add_argument('--as_text_gz', default=None, nargs='+', help='''
         If GWAS file is text gz. Set it and specify columns:
-        variant_id:SNP b:Beta b_se:se
+        variant_id:SNP b:Beta b_se:se chisq:CHISQ.
+        If chisq is set, b and b_se won't be read. 
     ''')
     args = parser.parse_args()
  

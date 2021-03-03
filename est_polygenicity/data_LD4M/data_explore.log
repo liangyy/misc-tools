@@ -1,0 +1,55 @@
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+       UK10K l2l4_maf_bin    l2l4_base        onekg         l2l4 
+     5353593      4812921      5916539      5961159      6227113 
+Count of common SNPs 
+UK10K = 5353593
+l2l4 (maf_bin) = 4812921
+l2l4 (base) = 5916539
+1000G = 5961159
+l2l4 = 6227113
+
+l2l4 base - l2l4 maf_bin
+
+FALSE FALSE  TRUE FALSE   TRUE TRUE 
+    1581545     1103618     4812921 
+l2l4 maf_bin is subset of l2l4 base: TRUE
+UK10K - l2l4 maf_bin
+
+FALSE FALSE  TRUE FALSE   TRUE TRUE 
+    2144491      540672     4812921 
+l2l4 maf_bin is subset of UK10K: TRUE
+UK10K - l2l4 base
+
+FALSE FALSE  FALSE TRUE  TRUE FALSE   TRUE TRUE 
+    1040874     1103617      540671     4812922 
+l2l4 base is subset of UK10K: FALSE
+1000G - l2l4
+
+FALSE FALSE  FALSE TRUE  TRUE FALSE   TRUE TRUE 
+      97662     1439263     1173309     4787850 
+l2l4 is subset of 1000G: FALSE
+UK10K - l2l4
+
+FALSE FALSE  FALSE TRUE  TRUE FALSE   TRUE TRUE 
+     730307     1414184      540664     4812929 
+l2l4 is subset of UK10K: FALSE
+Conclusion: l2l4 maf_bin is a subset of UK10K common SNPs.
+1414192 SNPs in l2l4 non-maf_bin.
+8 SNPs in l2l4 non-maf_bin are common in UK10K.
+Among these, 2 SNPs are common in 1000G.
+94507 SNPs in l2l4 non-maf_bin are common in 1000G.
+Final conclusion: 
+1. l2l4 maf_bin is a subset of UK10K common SNPs. 
+2. l2l4 non-maf_bin is almost not common in UK10K. 
+3. |l2l4 maf_bin| = 4812921; |UK10K common| = 5353593
+4. Aggregate the results from the non-overlapping l2l4 maf_bin bins. It may be slightly smaller than the one from UK10K common since it contains fewer SNPs.
