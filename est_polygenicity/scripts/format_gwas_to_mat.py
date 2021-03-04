@@ -26,7 +26,7 @@ def _to_dict(ll):
             has_chisq = True
         odict[k] = v 
     if has_chisq is True:
-        for k, v in odict:
+        for k, v in odict.items():
             if v in ['b', 'b_se']:
                 del odict[k]
     return odict
