@@ -1,0 +1,57 @@
+if 'outdir' not in config:
+    config['outdir'] = 'output'
+    
+def load_files_w_wildcard(str_):
+    fn = str_
+    pat = str_
+    if '{chr_num}' in str_:
+        fn = [ re.sub('{chr_num}', str(i), str_) for i in range(1, 23) ]
+        tmp = str_.split('{chr_num}')
+        pat = tmp[0] + 'CHRNUM' + tmp[1]
+    return fn, pat
+    
+def read_list(fn):
+    o = []
+    with open(fn, 'r') as f:
+        for i in f:
+            o.append(i.strip())
+    return o
+
+gwas_parquet, gwas_pattern = load_files_w_wildcard(config['gwas_parquet'])
+
+if 'gwas_list' in config:
+    gwas_list = read_list(config['gwas_list'])
+    rule all:
+        input:
+            [ '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(gwas_tag=i, **config) for i in gwas_list ]
+else:
+    rule all:
+        input:
+            '{outdir}/{gwas_tag}.sld4m_{mode}.csv'.format(**config)
+
+rule format_gwas:
+    input:
+        gwas_parquet = gwas_parquet
+    params:
+        gwas_pattern = gwas_pattern
+    output:
+        config['gwas_formatted']  # '{outdir}/{gwas_tag}.formated_gwas.mat'
+    shell:
+        'python scripts/format_gwas_to_mat.py \
+           --gwas_file {params.gwas_pattern} \
+           --output {output[0]} \
+           {config[gwas_mode]}'
+           
+rule sld4m:
+    input:
+        l2l4 = config['SLD4M']['l2l4'],
+        gwas = config['gwas_formatted']  # '{outdir}/{gwas_tag}.formated_gwas.mat'
+    output:
+        '{outdir}/{gwas_tag}.sld4m_{mode}.csv'
+    shell:
+        '''
+        matlab -nodisplay -nodesktop -r "\
+          addpath('{config[SLD4M][path_to_scripts]}', '{config[path_to_run_script]}'); \
+          run_sld4m('{input.l2l4}', '{input.gwas}', '{output[0]}', '{wildcards.mode}')"
+        '''
+
