@@ -159,16 +159,22 @@ def calc_h2(est, varcov):
 def null_df():
     return pd.DataFrame({'LR': np.nan, 'Vg': np.nan, 'Ve': np.nan, 'Vp': np.nan, 'Vg_SE': np.nan, 'Ve_SE': np.nan, 'Vp_SE': np.nan, 'h2': np.nan, 'h2_SE': np.nan, 'L0': np.nan, 'L1': np.nan}, index=[0])
 
-def pyemma_reml_mat_fac(X, grm):
+def pyemma_reml_mat_fac(X, grm, min_max_ratio=None):
     Q, _ = np.linalg.qr(X)
     Pgrm = grm - Q @ (Q.T @ grm)
     PgrmP = Pgrm.T - Q @ (Q.T @ Pgrm.T)
     q = X.shape[1]
-    val, vec = pyemma_mle_mat_fac(PgrmP)
+    val, vec = pyemma_mle_mat_fac(PgrmP, min_max_ratio=min_max_ratio)
     return val[q:], vec[:, q:]
 
-def pyemma_mle_mat_fac(grm):
-    return np.linalg.eigh(grm)
+def pyemma_mle_mat_fac(grm, min_max_ratio=None):
+    if min_max_ratio is None:
+        return np.linalg.eigh(grm)
+    else:
+        val, vec = np.linalg.eigh(grm)
+        to_remove_idx = np.where((val / val[-1]) <= min_max_ratio)[0]
+        val[to_remove_idx] = 0
+        return val, vec
 
 def pyemma_reml(y, grm_eig_vec, grm_eig_val, ori_grm_eig_vec, ori_grm_eig_val, X):
     res = pyemma_no_X(y, grm_eig_vec, grm_eig_val)

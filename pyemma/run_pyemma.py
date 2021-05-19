@@ -42,6 +42,9 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='''
         Output result summary in TSV.GZ format.
     ''')
+    parser.add_argument('--evd_min_max_ratio', type=float, default=None, help='''
+        The cutoff on eigen-vectors and -values in EVD: value / max(value) > evd_min_max_ratio.
+    ''')
     args = parser.parse_args()
  
     import logging, time, sys, os
@@ -91,10 +94,10 @@ if __name__ == '__main__':
         
         logging.info('Starting GRM EVD.')
         
-        eig_val, eig_vec = pyemma.pyemma_mle_mat_fac(grm)
+        eig_val, eig_vec = pyemma.pyemma_mle_mat_fac(grm, min_max_ratio=args.evd_min_max_ratio)
         to_cache = {'vec': eig_vec, 'val': eig_val, 'indiv': indiv}
         if args.reml is True:
-            eig_val_inter, eig_vec_inter = pyemma.pyemma_reml_mat_fac(np.ones((grm.shape[0], 1)), grm)
+            eig_val_inter, eig_vec_inter = pyemma.pyemma_reml_mat_fac(np.ones((grm.shape[0], 1)), grm, min_max_ratio=args.evd_min_max_ratio)
             to_cache['vec_intercept'] = eig_vec_inter
             to_cache['val_intercept'] = eig_val_inter
         if grm_cache is not None:
