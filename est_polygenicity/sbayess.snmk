@@ -90,9 +90,9 @@ if '{chr_num}' in config['ldm_prefix']:
         output:
             '{outdir}/{geno_tag}_mldm.list'
         run:
-            o = open(output, 'w')
+            o = open(output[0], 'w')
             for f in input.ldms:
-                o.write(f, '\n')
+                o.write(re.sub('.bin$', '', f) + '\n')
             o.close
     ldm_file = '{outdir}/{geno_tag}_mldm.list'
     ldm_opt_in_gctb = '--mldm' 
@@ -100,7 +100,7 @@ if '{chr_num}' in config['ldm_prefix']:
 else:
     ldm_file = config['ldm_prefix'] + '.ldm.' + config['ldm_mode'] + '.bin'
     ldm_opt_in_gctb = '--ldm' 
-    ldm_file_in_gctb = config['ldm_prefix'] + '.ldm.' + config['ldm_mode'] + '.bin'
+    ldm_file_in_gctb = config['ldm_prefix'] + '.ldm.' + config['ldm_mode']
 
 rule run_gctb:
     input:
@@ -112,11 +112,12 @@ rule run_gctb:
         '{outdir}/{geno_tag}_{gwas_tag}.parRes',
         '{outdir}/{geno_tag}_{gwas_tag}.snpRes'
     params:
-        outprefix = '{outdir}/{geno_tag}_{gwas_tag}'
+        outprefix = '{outdir}/{geno_tag}_{gwas_tag}',
+        ldm = ldm_file_in_gctb
     shell:
         '{config[gctb_exec]} \
            --sbayes S \
-           --{ldm_opt_in_gctb} {ldm_file_in_gctb} \
+           {ldm_opt_in_gctb} {params.ldm} \
            --gwas-summary {input.gwas} \
            {other_opts} \
            --out {params.outprefix}'
@@ -124,5 +125,5 @@ rule run_gctb:
 
 rule all_ldm:
     input:
-        ldm_file_in_gctb.format(**config)
+        ldm_file.format(**config)
         
