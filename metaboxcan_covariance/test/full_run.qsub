@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -N full_run_covariance
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+#PBS -l mem=16gb
+#PBS -l nodes=1:ppn=16
+#PBS -o full_run_covariance.out
+#PBS -e full_run_covariance.err
+
+source ~/.bash_profile
+source ~/.bashrc
+
+export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/transethnic_prs/:/gpfs/data/im-lab/nas40t2/yanyul/GitHub/SPrediXcan2PTRS/
+
+conda activate transethnic_prs
+
+genotype=/gpfs/data/im-lab/nas40t2/festus/metabolomics/guardian/final_qc/guardian.imp.qc_filtered.bed
+db=/gpfs/data/im-lab/nas40t2/festus/metabolomics/guardian/final_qc/guardian_imp-hapmap-snps_lasso_log-inversenorm_0.01.db
+outdir=/gpfs/data/im-lab/nas40t2/yanyul/tmp/debug_covariance
+
+python /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/metaboxcan_covariance/generate_covariance.py \
+  --genotype_bed $genotype \
+  --predictdb $db \
+  --snpid_to_report rsid varID \
+  --output $outdir/full_run_covariance
