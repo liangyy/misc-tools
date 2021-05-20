@@ -7,6 +7,18 @@ def flip_geno_by_direction(geno, direction):
     geno = vec2 * (dire == -1) + geno * dire
     return geno
 
+def snp_isin_data(snp, cov_dict):
+    if snp.chrom in cov_dict:
+        df_snp = cov_dict[snp.chrom][1]
+        idx = df_snp[ df_snp.snpid == snp.snpid ].idx.tolist()
+        if len(idx) == 0:
+            return False, 'NA'
+        elif len(idx) == 1:
+            return True, idx[0]
+        # return snp.snpid in cov_dict[snp.chrom][1].snpid.tolist(),  
+    else:
+        return False, 'NA'
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(prog='generate_covariance.py', description='''
@@ -102,30 +114,34 @@ if __name__ == '__main__':
             if snps_cc.snpid.isna().sum() > 0:
                 logging.info(f'Gene = {gene}: It is likely that there are ambiguious SNPs. They will be discarded.')
             snpid = snps_cc.snpid[~snps_cc.snpid.isna()].values
+            if len(snpid) == 0:
+                continue
             mat, snplist = geno.load(snpid, return_snplist=True)
             df_snp = pd.merge(snplist[['snpid']], snps_cc[['snpid', 'rsid', 'varID', 'direction', 'chrom']], how='left', on='snpid')
             df_snp['idx'] = [ i for i in range(df_snp.shape[0]) ]
             mat = flip_geno_by_direction(mat, df_snp.direction.values)
             cov_ = np.cov(mat.T)
+            if len(cov_.shape) == 0:
+                cov_ = cov_[np.newaxis, np.newaxis]
             cov_dict[cc] = (cov_, df_snp)
         # write to file
         for i in range(snps.shape[0]):
-            snpi = df_snp.iloc[i]
-            snpi_isin_data = snpi.snpid in cov_dict[snpi.chrom][1].snpid
+            snpi = snps.iloc[i]
+            snpi_isin_data, idxi = snp_isin_data(snpi, cov_dict)  
             for j in range(i + 1):
-                snpj = df_snp.iloc[j]
-                snpj_isin_data = snpj.snpid in cov_dict[snpj.chrom].snpid
+                snpj = snps.iloc[j]
+                snpj_isin_data, idxj = snp_isin_data(snpj, cov_dict)  # snpj.snpid in cov_dict[snpj.chrom][1].snpid
                 if snpi_isin_data is False or snpj_isin_data is False:
                     val = 'NA'
                 else:
                     if snpi.chrom == snpj.chrom:
                         cov_this = cov_dict[snpi.chrom][0]
-                        val = cov_this[snpi.idx, snpj.idx]
+                        val = cov_this[idxi, idxj]
                     else:
                         val = 0
-                for v in out_dict.values():
+                for k, v in out_dict.items():
                     v.write('{} {} {} {}\n'.format(
-                        gene, snpi[id_to_report], snpj[id_to_report], val
+                        gene, snpi[k], snpj[k], val
                     ))
     for v in out_dict.values():
         v.close()

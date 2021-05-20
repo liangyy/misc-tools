@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 db = '/gpfs/data/im-lab/nas40t2/festus/metabolomics/guardian/final_qc/guardian_imp-hapmap-snps_lasso_log-inversenorm_0.01.db'
 out = 'small_db.db'
-genes = ['V10', 'V101']
+genes = ['V593', 'V101']
 conn = sqlite3.connect(db)
 df = pd.read_sql_query("SELECT * FROM weights", conn)
 df = df[ df.gene.isin(genes) ].reset_index(drop=True)
