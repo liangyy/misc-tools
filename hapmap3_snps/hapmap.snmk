@@ -24,7 +24,7 @@ if 'chain_file' in config:
 rule all:
     input:
         # '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config),
-        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'.format(**config)
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.build_{target_build}.tsv.gz'.format(**config)
 
 rule extract_individuals:
     input:
