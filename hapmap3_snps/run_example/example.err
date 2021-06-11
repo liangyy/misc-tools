@@ -13,7 +13,7 @@ Job counts:
 	1	get_bim_file
 	7
 
-[Fri Jun 11 18:32:49 2021]
+[Fri Jun 11 18:49:12 2021]
 rule get_bim_file:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b36_fwd.consensus.qc.poly.ped, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b36_fwd.consensus.qc.poly.map
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim
@@ -24,11 +24,11 @@ plink           --ped /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b
 Warning: 1983 het. haploid genotypes present (see
 /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.hh
 ); many commands treat these as missing.
-[Fri Jun 11 18:34:11 2021]
+[Fri Jun 11 18:50:34 2021]
 Finished job 3.
 1 of 7 steps (14%) done
 
-[Fri Jun 11 18:34:11 2021]
+[Fri Jun 11 18:50:34 2021]
 rule extract_individuals:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/relationships_w_pops_041510.txt
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.individual.txt
@@ -36,16 +36,16 @@ rule extract_individuals:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU
 
 python extract.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/relationships_w_pops_041510.txt             --colname population             --output_cols FID IID             --by CEU             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.individual.txt
-2021-06-11 06:34:20 PM  Loading table.
-2021-06-11 06:34:20 PM  Extracting.
-2021-06-11 06:34:20 PM  Extracted 165 instances.
-2021-06-11 06:34:20 PM  Output.
-2021-06-11 06:34:20 PM  Done.
-[Fri Jun 11 18:34:20 2021]
+2021-06-11 06:50:42 PM  Loading table.
+2021-06-11 06:50:42 PM  Extracting.
+2021-06-11 06:50:42 PM  Extracted 165 instances.
+2021-06-11 06:50:42 PM  Output.
+2021-06-11 06:50:42 PM  Done.
+[Fri Jun 11 18:50:42 2021]
 Finished job 6.
 2 of 7 steps (29%) done
 
-[Fri Jun 11 18:34:20 2021]
+[Fri Jun 11 18:50:42 2021]
 rule compute_maf:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b36_fwd.consensus.qc.poly.ped, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b36_fwd.consensus.qc.poly.map, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.individual.txt
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
@@ -56,11 +56,11 @@ plink           --ped /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_r3_b
 Warning: 225 het. haploid genotypes present (see
 /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.hh
 ); many commands treat these as missing.
-[Fri Jun 11 18:35:42 2021]
+[Fri Jun 11 18:52:03 2021]
 Finished job 5.
 3 of 7 steps (43%) done
 
-[Fri Jun 11 18:35:42 2021]
+[Fri Jun 11 18:52:03 2021]
 rule filter_by_maf:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.01.txt
@@ -68,16 +68,16 @@ rule filter_by_maf:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.01
 
 python extract.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --colname MAF             --output_cols SNP             --mode maf             --by 0.01             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.01.txt
-2021-06-11 06:35:44 PM  Loading table.
-2021-06-11 06:35:45 PM  Extracting.
-2021-06-11 06:35:45 PM  Extracted 1227016 instances.
-2021-06-11 06:35:45 PM  Output.
-2021-06-11 06:35:55 PM  Done.
-[Fri Jun 11 18:35:55 2021]
+2021-06-11 06:52:05 PM  Loading table.
+2021-06-11 06:52:06 PM  Extracting.
+2021-06-11 06:52:06 PM  Extracted 1227016 instances.
+2021-06-11 06:52:06 PM  Output.
+2021-06-11 06:52:15 PM  Done.
+[Fri Jun 11 18:52:15 2021]
 Finished job 4.
 4 of 7 steps (57%) done
 
-[Fri Jun 11 18:35:55 2021]
+[Fri Jun 11 18:52:15 2021]
 rule filter_by_ambiguity:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.01.txt
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt
@@ -85,11 +85,11 @@ rule filter_by_ambiguity:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.01
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH; python filter_out_ambiguious_snps.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.01.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt
-[Fri Jun 11 18:36:01 2021]
+[Fri Jun 11 18:52:23 2021]
 Finished job 2.
 5 of 7 steps (71%) done
 
-[Fri Jun 11 18:36:01 2021]
+[Fri Jun 11 18:52:23 2021]
 rule gen_lookup_table:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b36.tsv.gz
@@ -97,25 +97,25 @@ rule gen_lookup_table:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.01, target_build=b36
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/liftover_snp:/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH;         python gen_lookup_table.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --input_frq /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --target_build b36                          --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b36.tsv.gz
-2021-06-11 06:36:01 PM  Loading SNP list.
-2021-06-11 06:36:02 PM  Loading SNP BIM file.
-2021-06-11 06:36:03 PM  Loading SNP FRQ file.
-2021-06-11 06:36:06 PM  Intersecting list and MAP.
-2021-06-11 06:36:08 PM  There are 1129234 SNPs left.
-2021-06-11 06:36:11 PM  Writing to disk.
-[Fri Jun 11 18:36:27 2021]
+2021-06-11 06:52:24 PM  Loading SNP list.
+2021-06-11 06:52:24 PM  Loading SNP BIM file.
+2021-06-11 06:52:25 PM  Loading SNP FRQ file.
+2021-06-11 06:52:29 PM  Intersecting list and MAP.
+2021-06-11 06:52:31 PM  There are 1108410 SNPs left.
+2021-06-11 06:52:34 PM  Writing to disk.
+[Fri Jun 11 18:52:48 2021]
 Finished job 1.
 6 of 7 steps (86%) done
 
-[Fri Jun 11 18:36:27 2021]
+[Fri Jun 11 18:52:48 2021]
 localrule all:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b36.tsv.gz
     jobid: 0
 
-[Fri Jun 11 18:36:27 2021]
+[Fri Jun 11 18:52:48 2021]
 Finished job 0.
 7 of 7 steps (100%) done
-Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T183247.226307.snakemake.log
+Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T184909.252925.snakemake.log
 Building DAG of jobs...
 Using shell: /bin/bash
 Provided cores: 1 (use --cores to define parallelism)
@@ -128,7 +128,7 @@ Job counts:
 	1	gen_lookup_table
 	4
 
-[Fri Jun 11 18:36:28 2021]
+[Fri Jun 11 18:52:50 2021]
 rule filter_by_maf:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.05.txt
@@ -136,16 +136,16 @@ rule filter_by_maf:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.05
 
 python extract.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --colname MAF             --output_cols SNP             --mode maf             --by 0.05             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.05.txt
-2021-06-11 06:36:29 PM  Loading table.
-2021-06-11 06:36:30 PM  Extracting.
-2021-06-11 06:36:30 PM  Extracted 1113192 instances.
-2021-06-11 06:36:30 PM  Output.
-2021-06-11 06:36:39 PM  Done.
-[Fri Jun 11 18:36:39 2021]
+2021-06-11 06:52:51 PM  Loading table.
+2021-06-11 06:52:52 PM  Extracting.
+2021-06-11 06:52:52 PM  Extracted 1113192 instances.
+2021-06-11 06:52:52 PM  Output.
+2021-06-11 06:53:00 PM  Done.
+[Fri Jun 11 18:53:01 2021]
 Finished job 4.
 1 of 4 steps (25%) done
 
-[Fri Jun 11 18:36:39 2021]
+[Fri Jun 11 18:53:01 2021]
 rule filter_by_ambiguity:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.05.txt
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt
@@ -153,11 +153,11 @@ rule filter_by_ambiguity:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.05
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH; python filter_out_ambiguious_snps.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU_maf_0.05.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt
-[Fri Jun 11 18:36:44 2021]
+[Fri Jun 11 18:53:08 2021]
 Finished job 2.
 2 of 4 steps (50%) done
 
-[Fri Jun 11 18:36:44 2021]
+[Fri Jun 11 18:53:08 2021]
 rule gen_lookup_table:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b36.tsv.gz
@@ -165,25 +165,25 @@ rule gen_lookup_table:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.05, target_build=b36
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/liftover_snp:/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH;         python gen_lookup_table.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --input_frq /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --target_build b36                          --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b36.tsv.gz
-2021-06-11 06:36:45 PM  Loading SNP list.
-2021-06-11 06:36:45 PM  Loading SNP BIM file.
-2021-06-11 06:36:46 PM  Loading SNP FRQ file.
-2021-06-11 06:36:50 PM  Intersecting list and MAP.
-2021-06-11 06:36:52 PM  There are 1025383 SNPs left.
-2021-06-11 06:36:54 PM  Writing to disk.
-[Fri Jun 11 18:37:08 2021]
+2021-06-11 06:53:08 PM  Loading SNP list.
+2021-06-11 06:53:08 PM  Loading SNP BIM file.
+2021-06-11 06:53:10 PM  Loading SNP FRQ file.
+2021-06-11 06:53:13 PM  Intersecting list and MAP.
+2021-06-11 06:53:15 PM  There are 1007394 SNPs left.
+2021-06-11 06:53:18 PM  Writing to disk.
+[Fri Jun 11 18:53:31 2021]
 Finished job 1.
 3 of 4 steps (75%) done
 
-[Fri Jun 11 18:37:08 2021]
+[Fri Jun 11 18:53:31 2021]
 localrule all:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b36.tsv.gz
     jobid: 0
 
-[Fri Jun 11 18:37:08 2021]
+[Fri Jun 11 18:53:31 2021]
 Finished job 0.
 4 of 4 steps (100%) done
-Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T183628.044226.snakemake.log
+Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T185249.786296.snakemake.log
 Building DAG of jobs...
 Using shell: /bin/bash
 Provided cores: 1 (use --cores to define parallelism)
@@ -194,7 +194,7 @@ Job counts:
 	1	gen_lookup_table
 	2
 
-[Fri Jun 11 18:37:09 2021]
+[Fri Jun 11 18:53:32 2021]
 rule gen_lookup_table:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b37.tsv.gz
@@ -202,27 +202,27 @@ rule gen_lookup_table:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.01, target_build=b37
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/liftover_snp:/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH;         python gen_lookup_table.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --input_frq /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --target_build b37             --liftover_chain /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b37.tsv.gz
-2021-06-11 06:37:09 PM  Loading SNP list.
-2021-06-11 06:37:10 PM  Loading SNP BIM file.
-2021-06-11 06:37:11 PM  Loading SNP FRQ file.
-2021-06-11 06:37:15 PM  Intersecting list and MAP.
-2021-06-11 06:37:17 PM  There are 1129234 SNPs left.
-2021-06-11 06:37:17 PM  Doing liftover, chain file = /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
-2021-06-11 06:37:24 PM  There are 1108189 SNPs left after liftover.
-2021-06-11 06:37:27 PM  Writing to disk.
-[Fri Jun 11 18:37:41 2021]
+2021-06-11 06:53:32 PM  Loading SNP list.
+2021-06-11 06:53:33 PM  Loading SNP BIM file.
+2021-06-11 06:53:34 PM  Loading SNP FRQ file.
+2021-06-11 06:53:37 PM  Intersecting list and MAP.
+2021-06-11 06:53:39 PM  There are 1108410 SNPs left.
+2021-06-11 06:53:39 PM  Doing liftover, chain file = /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
+2021-06-11 06:53:46 PM  There are 1108189 SNPs left after liftover.
+2021-06-11 06:53:49 PM  Writing to disk.
+[Fri Jun 11 18:54:04 2021]
 Finished job 1.
 1 of 2 steps (50%) done
 
-[Fri Jun 11 18:37:41 2021]
+[Fri Jun 11 18:54:04 2021]
 localrule all:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.01.build_b37.tsv.gz
     jobid: 0
 
-[Fri Jun 11 18:37:41 2021]
+[Fri Jun 11 18:54:04 2021]
 Finished job 0.
 2 of 2 steps (100%) done
-Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T183709.006355.snakemake.log
+Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T185331.872535.snakemake.log
 Building DAG of jobs...
 Using shell: /bin/bash
 Provided cores: 1 (use --cores to define parallelism)
@@ -233,7 +233,7 @@ Job counts:
 	1	gen_lookup_table
 	2
 
-[Fri Jun 11 18:37:42 2021]
+[Fri Jun 11 18:54:05 2021]
 rule gen_lookup_table:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim, /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq
     output: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b37.tsv.gz
@@ -241,24 +241,24 @@ rule gen_lookup_table:
     wildcards: outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output, name_tag=hapmap3_eur_new, pop_tag=CEU, maf=0.05, target_build=b37
 
 export PYTHONPATH=/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/liftover_snp:/gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/pyutil:$PYTHONPATH;         python gen_lookup_table.py             --input /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.txt             --input_bim /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_genotype.bim             --input_frq /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new_pop_CEU.frq             --target_build b37             --liftover_chain /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz             --output /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b37.tsv.gz
-2021-06-11 06:37:43 PM  Loading SNP list.
-2021-06-11 06:37:43 PM  Loading SNP BIM file.
-2021-06-11 06:37:44 PM  Loading SNP FRQ file.
-2021-06-11 06:37:48 PM  Intersecting list and MAP.
-2021-06-11 06:37:50 PM  There are 1025383 SNPs left.
-2021-06-11 06:37:50 PM  Doing liftover, chain file = /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
-2021-06-11 06:37:56 PM  There are 1007190 SNPs left after liftover.
-2021-06-11 06:37:59 PM  Writing to disk.
-[Fri Jun 11 18:38:13 2021]
+2021-06-11 06:54:05 PM  Loading SNP list.
+2021-06-11 06:54:06 PM  Loading SNP BIM file.
+2021-06-11 06:54:07 PM  Loading SNP FRQ file.
+2021-06-11 06:54:10 PM  Intersecting list and MAP.
+2021-06-11 06:54:12 PM  There are 1007394 SNPs left.
+2021-06-11 06:54:12 PM  Doing liftover, chain file = /gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
+2021-06-11 06:54:18 PM  There are 1007190 SNPs left after liftover.
+2021-06-11 06:54:21 PM  Writing to disk.
+[Fri Jun 11 18:54:35 2021]
 Finished job 1.
 1 of 2 steps (50%) done
 
-[Fri Jun 11 18:38:13 2021]
+[Fri Jun 11 18:54:35 2021]
 localrule all:
     input: /gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3/hapmap3_snps_output/hapmap3_eur_new.no_ambiguity.pop_CEU_maf_0.05.build_b37.tsv.gz
     jobid: 0
 
-[Fri Jun 11 18:38:13 2021]
+[Fri Jun 11 18:54:35 2021]
 Finished job 0.
 2 of 2 steps (100%) done
-Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T183742.237367.snakemake.log
+Complete log: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/.snakemake/log/2021-06-11T185404.750068.snakemake.log

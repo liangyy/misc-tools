@@ -63,17 +63,17 @@ Total genotyping rate in remaining samples is 0.997378.
 
 ------------ Job WrapUp ------------
 
-Job ID:            29639771.cri16sc001
+Job ID:            29639772.cri16sc001
 User ID:           t.cri.yliang
 Job Name:          example.qsub
 Queue Name:        standard
 Working Directory: /gpfs/data/im-lab/nas40t2/yanyul/GitHub/misc-tools/hapmap3_snps/run_example
 Resource List:     walltime=24:00:00,nodes=1:ppn=1,mem=16gb,neednodes=1:ppn=1
-Resources Used:    cput=00:05:13,vmem=66303520kb,walltime=00:05:30,mem=638808kb,energy_used=0
+Resources Used:    cput=00:05:14,vmem=66303516kb,walltime=00:05:32,mem=659988kb,energy_used=0
 Exit Code:         0
-Mother Superior:   cri16cn071
+Mother Superior:   cri16cn052
 
 Execution Nodes: 
-cri16cn071
+cri16cn052
 
 

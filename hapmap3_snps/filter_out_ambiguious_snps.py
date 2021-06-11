@@ -18,7 +18,7 @@ def filter_out_ambiguious_snps(df):
         if ch not in chrs:
             # check for chr = 1 .. 22
             is_ambi.append(True)
-        if a not in SNP_PAIR:
+        elif a not in SNP_PAIR:
             # if the allele code is other than ATCG, it is considered as ambiguious
             is_ambi.append(True)
         elif SNP_PAIR[a] == b:
