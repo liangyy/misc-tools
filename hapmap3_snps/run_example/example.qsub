@@ -14,9 +14,9 @@ module load gcc/6.2.0; module load plink/1.90
 conda activate imlabtools
 
 b26_to_b37=/gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
-outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3
 
 cd ${PBS_O_WORKDIR}
+cd ../
 
 $MYSNMK -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p -j1 --config maf=0.01 target_build=b36
 
