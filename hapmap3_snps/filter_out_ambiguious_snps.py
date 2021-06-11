@@ -14,7 +14,10 @@ def filter_out_ambiguious_snps(df):
     '''
     is_ambi = []
     for a, b in zip(list(df.a1), list(df.a2)):
-        if SNP_PAIR[a] == b:
+        if a not in SNP_PAIR:
+            # if the allele code is other than ATCG, it is considered as ambiguious
+            is_ambi.append(True)
+        elif SNP_PAIR[a] == b:
             is_ambi.append(True)
         else:
             is_ambi.append(False)

@@ -117,6 +117,8 @@ if __name__ == '__main__':
             if len(snpid) == 0:
                 continue
             mat, snplist = geno.load(snpid, return_snplist=True)
+            if mat is None:
+                continue
             df_snp = pd.merge(snplist[['snpid']], snps_cc[['snpid', 'rsid', 'varID', 'direction', 'chrom']], how='left', on='snpid')
             df_snp['idx'] = [ i for i in range(df_snp.shape[0]) ]
             mat = flip_geno_by_direction(mat, df_snp.direction.values)
