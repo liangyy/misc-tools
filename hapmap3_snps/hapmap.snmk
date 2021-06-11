@@ -17,19 +17,14 @@ def get_genotypes(config):
 
 genotype_command, genotype_files = get_genotypes(config)
 
+chain_args = ''
+if 'chain_file' in config:
+    chain_args = '--liftover_chain {}'.format(config['chain_file'])
+
 rule all:
     input:
-        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config)
-
-target_build = ''
-if 'gen_lookup_table' in config:
-    chain_args = ''
-    target_build = config['gen_lookup_table']['target_build']
-    if config['gen_lookup_table']['chain_file'] is not None:
-        chain_args = '--liftover_chain {}'.format(config['gen_lookup_table']['chain_file'])
-    rule all_lookup:
-        input:
-            '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'.format(**config)
+        # '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.txt'.format(**config),
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'.format(**config)
 
 rule extract_individuals:
     input:
@@ -109,13 +104,13 @@ rule gen_lookup_table:
         geno_bim = '{outdir}/{name_tag}_genotype.bim',
         geno_frq = '{outdir}/{name_tag}_pop_{pop_tag}.frq'
     output:
-        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.lookup_table.tsv.gz'
+        '{outdir}/{name_tag}.no_ambiguity.pop_{pop_tag}_maf_{maf}.build_{target_build}.tsv.gz'
     shell:
         'export PYTHONPATH={config[misc_tools_path]}/liftover_snp:{config[misc_tools_path]}/pyutil:$PYTHONPATH; \
         python gen_lookup_table.py \
             --input {input.snplist} \
             --input_bim {input.geno_bim} \
             --input_frq {input.geno_frq} \
-            --target_build {target_build} \
+            --target_build {wildcards.target_build} \
             {chain_args} \
             --output {output[0]}'
