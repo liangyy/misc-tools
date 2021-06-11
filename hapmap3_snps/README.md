@@ -16,6 +16,10 @@ The `target_build` should always be specified and it will be added as an column 
 Please make sure that it is correct. 
 For HapMap 3 SNPs considered here, the original build is b36 and if using liftover, one should assign `chain_file` with the final build after liftover. 
 For instance, if use chain file `hg18ToHg19.over.chain.gz`, one should set `chain_file` to hg19 or b37.
+Note that liftover will result loss of SNPs since some SNPs may fail to be liftover.
+For instance, in the example run:
+* MAF = 0.01: For b36 -> b37, the number of SNPs goes from 1129234 to 1108189 
+* MAF = 0.05: For b36 -> b37, the number of SNPs goes from 1025383 to 1007190
 
 # Dependency 
 
@@ -37,9 +41,9 @@ snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.
 
 # build b37
 ## maf = 0.01
-snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.01 target_build=b37 chain_file=[path-to-chain-file]
+snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.01 target_build=b37 chain_file=[path-to/hg18ToHg19.over.chain.gz]
 ## maf = 0.05
-snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.05 target_build=b37 chain_file=[path-to-chain-file]
+snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.05 target_build=b37 chain_file=[path-to/hg18ToHg19.over.chain.gz]
 ```
 
 The resulting files of the test run are here: 
@@ -47,4 +51,6 @@ The resulting files of the test run are here:
 * [maf = 0.05, build = b36](https://uchicago.box.com/s/gzanqljws8nhsgdqzo62m9nandydknqe)
 * [maf = 0.01, build = b37](https://uchicago.box.com/s/1olk17k8xelbs5mcqesb0zeotb7hhemd)
 * [maf = 0.05, build = b37](https://uchicago.box.com/s/v01qas475lnxl8sysezwg4vthq7kw51q) 
+
+**Extra note**: chr25 should be explained as chrY. 
 
