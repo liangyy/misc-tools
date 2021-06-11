@@ -42,6 +42,7 @@ if __name__ == '__main__':
         datefmt = '%Y-%m-%d %I:%M:%S %p'
     )
     
+    import re 
     import pandas as pd
     import numpy as np
     import lib as lo_lib
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     df_bim.columns = ['chr', 'rsid', 'placeholder', 'pos', 'a1', 'a2']
     
     logging.info('Loading SNP FRQ file.')
-    df_frq = pd.read_csv(args.input_frq, sep='\s+', header=None)
+    df_frq = pd.read_csv(args.input_frq, sep='\s+')
     df_bim = pd.merge(df_bim, df_frq[['CHR', 'SNP', 'MAF']], left_on=['chr', 'rsid'], right_on=['CHR', 'SNP'])
     
     logging.info('Intersecting list and MAP.')
@@ -71,13 +72,15 @@ if __name__ == '__main__':
         df_bim.pos = df_lifted.liftover_pos
         df_bim.chr = df_lifted.liftover_chr
         df_bim = df_bim[ ~ df_bim.pos.isna() ].reset_index(drop=True)
+        # failure will also be labeled as pos = 0
+        df_bim = df_bim[ df_bim.pos != 0 ].reset_index(drop=True)
         logging.info('There are {} SNPs left after liftover.'.format(df_bim.shape[0]))
     
     df_bim.rename(
         columns={
             'pos': 'position', 'chr': 'chromosome', 
             'a2': 'allele_0', 'a1': 'allele_1', 
-            'allele_1_frequency': 'MAF'
+            'MAF': 'allele_1_frequency'
         }, 
         inplace=True
     )
