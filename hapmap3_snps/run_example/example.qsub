@@ -1,0 +1,27 @@
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=1
+#PBS -l mem=16gb
+#PBS -e example.err
+#PBS -o example.out
+
+
+source ~/.bash_profile
+source ~/.bashrc
+
+MYSNMK=/home/t.cri.yliang/miniconda2/envs/snakemake/bin/snakemake
+module load gcc/6.2.0; module load plink/1.90
+conda activate imlabtools
+
+b26_to_b37=/gpfs/data/im-lab/nas40t2/yanyul/data/hg18ToHg19.over.chain.gz
+outdir=/gpfs/data/im-lab/nas40t2/yanyul/data/hapmap3
+
+cd ${PBS_O_WORKDIR}
+
+$MYSNMK -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p -j1 --config maf=0.01 target_build=b36
+
+$MYSNMK -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p -j1 --config maf=0.05 target_build=b36
+
+$MYSNMK -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p -j1 --config maf=0.01 target_build=b37 chain_file=$b26_to_b37
+
+$MYSNMK -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p -j1 --config maf=0.05 target_build=b37 chain_file=$b26_to_b37
