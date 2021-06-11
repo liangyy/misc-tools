@@ -18,8 +18,8 @@ For HapMap 3 SNPs considered here, the original build is b36 and if using liftov
 For instance, if use chain file `hg18ToHg19.over.chain.gz`, one should set `chain_file` to hg19 or b37.
 Note that liftover will result loss of SNPs since some SNPs may fail to be liftover.
 For instance, in the example run:
-* MAF = 0.01: For b36 -> b37, the number of SNPs goes from 1129234 to 1108189 
-* MAF = 0.05: For b36 -> b37, the number of SNPs goes from 1025383 to 1007190
+* MAF = 0.01: For b36 -> b37, the number of SNPs goes from 1108410 to 1108189 
+* MAF = 0.05: For b36 -> b37, the number of SNPs goes from 1007394 to 1007190
 
 # Dependency 
 
@@ -47,8 +47,8 @@ snakemake -s hapmap.snmk --configfile config.hapmap3_eur.yaml -p --config maf=0.
 ```
 
 The resulting files of the test run are here: 
-* [maf = 0.01, build = b36](https://uchicago.box.com/s/ewbr5i2ye5zd2o8ny2rcxlro532at4ui)
-* [maf = 0.05, build = b36](https://uchicago.box.com/s/gzanqljws8nhsgdqzo62m9nandydknqe)
-* [maf = 0.01, build = b37](https://uchicago.box.com/s/1olk17k8xelbs5mcqesb0zeotb7hhemd)
-* [maf = 0.05, build = b37](https://uchicago.box.com/s/v01qas475lnxl8sysezwg4vthq7kw51q) 
+* [maf = 0.01, build = b36](https://uchicago.box.com/s/n6oqakmu8g2unsspa5z1fyr8dn060o8b)
+* [maf = 0.05, build = b36](https://uchicago.box.com/s/t1ock2xoyanun9umlkwkifvkjy1vda32)
+* [maf = 0.01, build = b37](https://uchicago.box.com/s/junrcgxwpuyck03r6gq88j9b18g18vf5)
+* [maf = 0.05, build = b37](https://uchicago.box.com/s/sj0xsd0wbvty9dgxx0jewjw0tnd8aoch) 
 
