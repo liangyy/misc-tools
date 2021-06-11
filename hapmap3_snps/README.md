@@ -8,7 +8,7 @@ The workflow is based on `snakemake` and it contains the following steps:
 2. Extract individuals from the desired population (`rule extract_individuals`)
 3. Compute MAF among the extracted individuals from step 2 (`rule compute_maf`)
 4. Filter the SNPs based on the MAF calculated in step 3 (`rule filter_by_maf`)
-5. Filter out ambiguous SNPs. Also, the non-SNV and SNPs without rsID are filtered out (`rule filter_by_ambiguity`)
+5. Filter out ambiguous SNPs. Also, the non-SNV SNPs or SNPs without rsID or SNPs outside chr1-chr22 are filtered out (`rule filter_by_ambiguity`)
 6. Annotate the extracted SNPs (from step 5) with genomic position and MAF. If specified, also do liftover (`rule gen_lookup_table`)
 
 If one wants to do liftover, then `chain_file` should be specified.
@@ -51,6 +51,4 @@ The resulting files of the test run are here:
 * [maf = 0.05, build = b36](https://uchicago.box.com/s/gzanqljws8nhsgdqzo62m9nandydknqe)
 * [maf = 0.01, build = b37](https://uchicago.box.com/s/1olk17k8xelbs5mcqesb0zeotb7hhemd)
 * [maf = 0.05, build = b37](https://uchicago.box.com/s/v01qas475lnxl8sysezwg4vthq7kw51q) 
-
-**Extra note**: chr25 should be explained as chrY. 
 
