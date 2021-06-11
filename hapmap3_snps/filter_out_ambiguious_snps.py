@@ -12,8 +12,12 @@ def filter_out_ambiguious_snps(df):
     Input a pandas DataFrame with BIM entries: 
     ['chr', 'rsid', 'placeholder', 'pos', 'a1', 'a2']
     '''
+    chrs = [ str(i) for i in range(1, 23) ]
     is_ambi = []
-    for a, b in zip(list(df.a1), list(df.a2)):
+    for ch, a, b in zip(list(df.chr.astype(str)), list(df.a1), list(df.a2)):
+        if ch not in chrs:
+            # check for chr = 1 .. 22
+            is_ambi.append(True)
         if a not in SNP_PAIR:
             # if the allele code is other than ATCG, it is considered as ambiguious
             is_ambi.append(True)
