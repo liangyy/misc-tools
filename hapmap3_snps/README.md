@@ -1,5 +1,7 @@
 # About
 
+This is the readme of the codes [here](https://github.com/liangyy/misc-tools/tree/master/hapmap3_snps).
+
 This module extract HapMap 3 SNPs for downstream use.
 Download data from [https://ftp.ncbi.nlm.nih.gov/hapmap/genotypes/hapmap3_r3/plink_format/](https://ftp.ncbi.nlm.nih.gov/hapmap/genotypes/hapmap3_r3/plink_format/)
 
